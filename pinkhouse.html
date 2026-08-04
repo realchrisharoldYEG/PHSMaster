@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pink House One | Gateway & Ecosystem Hub</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        phDark: '#0a0a0a',
+                        phCard: '#141414',
+                        phBorder: '#262626',
+                        phAccent: '#ff2a5f'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-phDark text-white font-sans antialiased selection:bg-phAccent selection:text-white">
+
+    <!-- TOP UTILITY HEADER -->
+    <header class="flex justify-between items-center px-8 py-4 border-b border-phBorder bg-phDark/90 backdrop-blur sticky top-0 z-50">
+        <div class="flex items-center space-x-6">
+            <span class="font-black tracking-tighter text-xl text-white">PINK HOUSE <span class="text-phAccent">ONE</span></span>
+            <nav class="hidden md:flex space-x-6 text-sm text-neutral-400">
+                <a href="index.html" class="text-white hover:text-phAccent transition">Ecosystem</a>
+                <a href="openriver_index.html" class="hover:text-phAccent transition">OpenRiver L2</a>
+                <a href="ai_command.html" class="hover:text-phAccent transition">AI Command</a>
+                <a href="atelier_index.html" class="hover:text-phAccent transition">Atelier</a>
+            </nav>
+        </div>
+        <div class="flex items-center space-x-4">
+            <span class="text-xs uppercase tracking-widest px-2 py-1 bg-phBorder text-neutral-300 rounded">Base L2 Connected</span>
+            <div class="w-8 h-8 rounded-full bg-phAccent flex items-center justify-center font-bold text-xs">CP</div>
+        </div>
+    </header>
+
+    <!-- HERO SEARCH ANCHOR -->
+    <section class="max-w-4xl mx-auto px-6 pt-20 pb-16 text-center">
+        <h1 class="text-4xl md:text-6xl font-black tracking-tight mb-6">WHAT ARE WE RELEASING TODAY?</h1>
+        <div class="relative w-full shadow-2xl">
+            <input type="text" placeholder="Search albums, audio dramas, scripts, assets, or addresses..." class="w-full bg-phCard border border-phBorder rounded-none px-6 py-4 text-lg text-white placeholder-neutral-500 focus:outline-none focus:border-phAccent transition">
+            <button class="absolute right-2 top-2 bottom-2 px-6 bg-white text-black font-bold uppercase tracking-wider text-xs hover:bg-phAccent hover:text-white transition">
+                Query
+            </button>
+        </div>
+        <div class="flex justify-center space-x-4 mt-4 text-xs text-neutral-500 uppercase tracking-widest">
+            <span>Trending:</span>
+            <a href="openriver_index.html" class="text-neutral-300 hover:text-white">The Sunshine Club</a>
+            <span>•</span>
+            <a href="atelier_index.html" class="text-neutral-300 hover:text-white">Sincerely, Yours</a>
+            <span>•</span>
+            <a href="openriver_index.html" class="text-neutral-300 hover:text-white">OpenRiver Bridge</a>
+        </div>
+    </section>
+
+    <!-- PRIME-STYLE IMMERSIVE CAROUSEL SECTIONS -->
+    <main class="max-w-7xl mx-auto px-6 pb-24 space-y-16">
+
+        <!-- SECTION 1: FEATURED AUDIO & VIDEO DROPS -->
+        <div>
+            <div class="flex justify-between items-end mb-6 border-b border-phBorder pb-2">
+                <h2 class="text-xl font-bold uppercase tracking-wider">Prime Audio & Visual Releases</h2>
+                <a href="openriver_index.html" class="text-xs uppercase tracking-widest text-phAccent hover:underline">View All Catalog &rarr;</a>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                <!-- Card 1 -->
+                <div class="bg-phCard border border-phBorder group hover:border-white transition flex flex-col">
+                    <div class="h-48 bg-neutral-900 flex items-center justify-center relative overflow-hidden">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
+                        <span class="relative font-bold tracking-tight text-lg">THE SUNSHINE CLUB</span>
+                    </div>
+                    <div class="p-4 flex flex-col flex-grow justify-between">
+                        <div>
+                            <span class="text-[10px] uppercase tracking-widest text-phAccent">Audio Original Series</span>
+                            <p class="text-sm font-semibold mt-1">Pilot Episode: Pay the Mortgage</p>
+                        </div>
+                        <a href="openriver_index.html" class="mt-4 block text-center w-full py-2 bg-white text-black font-bold uppercase text-xs hover:bg-phAccent hover:text-white transition">
+                            Stream Now
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="bg-phCard border border-phBorder group hover:border-white transition flex flex-col">
+                    <div class="h-48 bg-neutral-900 flex items-center justify-center relative overflow-hidden">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
+                        <span class="relative font-bold tracking-tight text-lg">SINCERELY, YOURS</span>
+                    </div>
+                    <div class="p-4 flex flex-col flex-grow justify-between">
+                        <div>
+                            <span class="text-[10px] uppercase tracking-widest text-phAccent">Studio Album</span>
+                            <p class="text-sm font-semibold mt-1">Live-Recorded Multi-Track Master</p>
+                        </div>
+                        <a href="atelier_index.html" class="mt-4 block text-center w-full py-2 bg-white text-black font-bold uppercase text-xs hover:bg-phAccent hover:text-white transition">
+                            Stream Now
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="bg-phCard border border-phBorder group hover:border-white transition flex flex-col">
+                    <div class="h-48 bg-neutral-900 flex items-center justify-center relative overflow-hidden">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
+                        <span class="relative font-bold tracking-tight text-lg">RED: THE STORY</span>
+                    </div>
+                    <div class="p-4 flex flex-col flex-grow justify-between">
+                        <div>
+                            <span class="text-[10px] uppercase tracking-widest text-phAccent">Immersive Doc</span>
+                            <p class="text-sm font-semibold mt-1">The Largest Love Story</p>
+                        </div>
+                        <a href="openriver_index.html" class="mt-4 block text-center w-full py-2 bg-white text-black font-bold uppercase text-xs hover:bg-phAccent hover:text-white transition">
+                            Stream Now
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Card 4 -->
+                <div class="bg-phCard border border-phBorder group hover:border-white transition flex flex-col">
+                    <div class="h-48 bg-neutral-900 flex items-center justify-center relative overflow-hidden">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
+                        <span class="relative font-bold tracking-tight text-lg">ALLOWANCE</span>
+                    </div>
+                    <div class="p-4 flex flex-col flex-grow justify-between">
+                        <div>
+                            <span class="text-[10px] uppercase tracking-widest text-phAccent">Pixar-Style Concept</span>
+                            <p class="text-sm font-semibold mt-1">Golden Compass Narrative</p>
+                        </div>
+                        <a href="atelier_index.html" class="mt-4 block text-center w-full py-2 bg-white text-black font-bold uppercase text-xs hover:bg-phAccent hover:text-white transition">
+                            Explore
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION 2: OPENRIVER MARKETPLACE RAILS -->
+        <div>
+            <div class="flex justify-between items-end mb-6 border-b border-phBorder pb-2">
+                <h2 class="text-xl font-bold uppercase tracking-wider">OpenRiver L2 Marketplace & Assets</h2>
+                <a href="openriver_index.html" class="text-xs uppercase tracking-widest text-phAccent hover:underline">Launch Bridge &rarr;</a>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="bg-phCard border border-phBorder p-6 flex flex-col justify-between">
+                    <div>
+                        <div class="text-xs font-mono text-neutral-500 mb-2">BASE NETWORK TOKEN</div>
+                        <h3 class="text-lg font-bold mb-1">$RIVAL Asset Node</h3>
+                        <p class="text-sm text-neutral-400">Official brand ecosystem currency representing creative works and physical/digital merchandise.</p>
+                    </div>
+                    <div class="mt-6 pt-4 border-t border-phBorder flex justify-between items-center">
+                        <span class="font-mono text-sm text-phAccent">Active</span>
+                        <a href="/Atelier/index.html" class="px-4 py-1.5 bg-neutral-800 hover:bg-white hover:text-black font-bold uppercase text-xs transition inline-block text-center">Manage</a>
+                    </div>
+                </div>
+
+                <div class="bg-phCard border border-phBorder p-6 flex flex-col justify-between">
+                    <div>
+                        <div class="text-xs font-mono text-neutral-500 mb-2">BRIDGE PROTOCOL</div>
+                        <h3 class="text-lg font-bold mb-1">OpenRiver L2 Bridge</h3>
+                        <p class="text-sm text-neutral-400">Zero-latency transaction routing, asset verification, and metadata registry management.</p>
+                    </div>
+                    <div class="mt-6 pt-4 border-t border-phBorder flex justify-between items-center">
+                        <span class="font-mono text-sm text-neutral-300">Ready</span>
+                        <a href="/OpenRiver/index.html" class="px-4 py-1.5 bg-neutral-800 hover:bg-white hover:text-black font-bold uppercase text-xs transition inline-block text-center">Open Portal</a>
+                    </div>
+                </div>
+
+                <div class="bg-phCard border border-phBorder p-6 flex flex-col justify-between">
+                    <div>
+                        <div class="text-xs font-mono text-neutral-500 mb-2">TELEMETRY & COMMAND</div>
+                        <h3 class="text-lg font-bold mb-1">AI Teams Hub</h3>
+                        <p class="text-sm text-neutral-400">Monitor internal deployment scripts, analytics tracking, and automated asset compilation.</p>
+                    </div>
+                    <div class="mt-6 pt-4 border-t border-phBorder flex justify-between items-center">
+                        <span class="font-mono text-sm text-emerald-400">Online</span>
+                        <a href="/AI Teams/ai_command.html" class="px-4 py-1.5 bg-neutral-800 hover:bg-white hover:text-black font-bold uppercase text-xs transition inline-block text-center">Access Console</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="border-t border-phBorder py-8 text-center text-xs text-neutral-500 tracking-wider">
+        PINK HOUSE ONE // RED ROCK & PINK HOUSE SISTERHOOD FAMILY &copy; 2026. ALL RIGHTS RESERVED.
+    </footer>
+
+</body>
+</html>

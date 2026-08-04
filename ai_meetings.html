@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Teams // Meetings & Mission Console</title>
+<style>
+  :root {
+    --canvas: #050505;
+    --surface: #0e0e0e;
+    --surface-raised: #141414;
+    --text-primary: #ffffff;
+    --text-secondary: #a3a3a3;
+    --border: #1f1f1f;
+    --signal: #00f0ff;
+    --accent: #ff2a5f;
+    --danger: #ff3b3b;
+    --warning: #ffb020;
+    --success: #4dff88;
+    --radius: 0px;
+    --shadow: none;
+    --font-interface: "Geist Mono", "JetBrains Mono", monospace;
+  }
+
+  * { box-sizing: border-box; }
+
+  .mc-root {
+    background: var(--canvas);
+    color: var(--text-primary);
+    font-family: var(--font-interface);
+    font-size: 13px;
+    line-height: 1.5;
+    min-height: 100vh;
+    padding: 0;
+    letter-spacing: 0.01em;
+  }
+
+  .mc-root ::selection { background: var(--accent); color: #fff; }
+
+  /* ---------- Top bar ---------- */
+  .mc-topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--border);
+    padding: 14px 24px;
+    background: var(--surface);
+    position: sticky;
+    top: 0;
+    z-index: 50;
+  }
+  .mc-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .mc-brand-mark {
+    width: 10px;
+    height: 10px;
+    background: var(--accent);
+  }
+  .mc-brand-name {
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    font-size: 12px;
+  }
+  .mc-brand-sub {
+    color: var(--text-secondary);
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-top: 2px;
+  }
+  .mc-topbar-right {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+  .mc-audit-badge {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    border: 1px solid var(--signal);
+    color: var(--signal);
+    padding: 4px 10px;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    background: rgba(0, 240, 255, 0.03);
+  }
+  .mc-audit-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--signal);
+    animation: mc-pulse 1.8s ease-in-out infinite;
+  }
+  @keyframes mc-pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.25; }
+  }
+  .mc-commander {
+    font-size: 11px;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .mc-commander b { color: var(--text-primary); font-weight: 700; }
+
+  /* ---------- Nav ---------- */
+  .mc-nav {
+    display: flex;
+    border-bottom: 1px solid var(--border);
+    background: var(--canvas);
+    overflow-x: auto;
+  }
+  .mc-nav-item {
+    padding: 12px 20px;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-secondary);
+    cursor: pointer;
+    border-right: 1px solid var(--border);
+    white-space: nowrap;
+    transition: color 0.15s ease, background 0.15s ease;
+    user-select: none;
+  }
+  .mc-nav-item:hover { color: var(--text-primary); background: var(--surface); }
+  .mc-nav-item.active {
+    color: #000;
+    background: var(--signal);
+    font-weight: 700;
+  }
+
+  /* ---------- Layout ---------- */
+  .mc-body { padding: 24px; max-width: 1400px; margin: 0 auto; }
+  .mc-panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+  .mc-panel-title {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--text-secondary);
+    margin: 0 0 16px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .mc-grid { display: grid; gap: 20px; }
+  .mc-grid-3 { grid-template-columns: repeat(3, 1fr); }
+  .mc-grid-2 { grid-template-columns: 1.4fr 1fr; }
+
+  /* ---------- Dashboard: mission rows ---------- */
+  .mc-mission-row {
+    display: grid;
+    grid-template-columns: 90px 1fr 140px 110px 100px;
+    gap: 12px;
+    align-items: center;
+    padding: 14px 12px;
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+    transition: background 0.15s ease;
+  }
+  .mc-mission-row:last-child { border-bottom: none; }
+  .mc-mission-row:hover { background: var(--surface-raised); }
+  .mc-mission-id { color: var(--text-secondary); font-size: 11px; }
+  .mc-mission-title { font-weight: 600; }
+  .mc-mission-title .mc-mission-phase {
+    display: block;
+    color: var(--text-secondary);
+    font-weight: 400;
+    font-size: 11px;
+    margin-top: 2px;
+  }
+  .mc-tag {
+    display: inline-block;
+    padding: 3px 8px;
+    font-size: 10px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    border: 1px solid var(--border);
+  }
+  .mc-tag.risk-low { color: var(--success); border-color: var(--success); }
+  .mc-tag.risk-medium { color: var(--warning); border-color: var(--warning); }
+  .mc-tag.risk-high { color: var(--danger); border-color: var(--danger); }
+  .mc-tag.gate-awaiting { color: var(--signal); border-color: var(--signal); background: rgba(0,240,255,0.05); }
+  .mc-tag.gate-locked { color: var(--text-secondary); }
+  .mc-enter-btn {
+    background: transparent;
+    border: 1px solid var(--text-primary);
+    color: var(--text-primary);
+    font-family: var(--font-interface);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding: 6px 12px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+  .mc-enter-btn:hover { background: var(--text-primary); color: var(--canvas); }
+
+  .mc-stat { text-align: left; }
+  .mc-stat-value { font-size: 32px; font-weight: 700; line-height: 1; }
+  .mc-stat-label { color: var(--text-secondary); font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; margin-top: 8px; }
+
+  /* ---------- Commander Console ---------- */
+  .mc-input-area {
+    width: 100%;
+    background: var(--canvas);
+    border: 1px solid var(--border);
+    color: var(--text-primary);
+    font-family: var(--font-interface);
+    font-size: 13px;
+    padding: 14px;
+    resize: vertical;
+    min-height: 100px;
+  }
+  .mc-input-area:focus { outline: none; border-color: var(--signal); }
+  .mc-input-area::placeholder { color: var(--text-secondary); }
+
+  .mc-model-row { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+  .mc-model-chip {
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+    padding: 6px 12px;
+    font-size: 11px;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    transition: all 0.15s ease;
+    background: var(--canvas);
+  }
+  .mc-model-chip.selected { border-color: var(--signal); color: var(--signal); background: rgba(0,240,255,0.05); }
+  .mc-model-chip:hover { color: var(--text-primary); border-color: var(--text-primary); }
+
+  .mc-dispatch-btn {
+    margin-top: 16px;
+    background: var(--signal);
+    color: #000;
+    border: none;
+    font-family: var(--font-interface);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 11px;
+    padding: 12px 20px;
+    cursor: pointer;
+    transition: opacity 0.15s ease;
+  }
+  .mc-dispatch-btn:hover { opacity: 0.9; }
+  .mc-dispatch-btn:disabled { background: var(--border); color: var(--text-secondary); cursor: not-allowed; }
+
+  .mc-output {
+    background: var(--canvas);
+    border: 1px solid var(--border);
+    padding: 16px;
+    min-height: 180px;
+    white-space: pre-wrap;
+    font-size: 12.5px;
+    color: var(--text-primary);
+  }
+  .mc-output .mc-cursor {
+    display: inline-block;
+    width: 7px; height: 13px; background: var(--signal);
+    animation: mc-pulse 0.9s step-start infinite;
+    vertical-align: text-bottom;
+    margin-left: 2px;
+  }
+  .mc-processing {
+    color: var(--text-secondary);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  .mc-processing-dot { width: 6px; height: 6px; background: var(--signal); border-radius: 50%; animation: mc-pulse 1s ease-in-out infinite; }
+
+  .mc-gate-box { border: 1px solid var(--signal); padding: 16px; margin-top: 20px; background: rgba(0,240,255,0.02); }
+  .mc-gate-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--signal); margin-bottom: 12px; }
+  .mc-gate-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+  .mc-gate-btn {
+    font-family: var(--font-interface);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 8px 16px;
+    cursor: pointer;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text-primary);
+    transition: all 0.15s ease;
+  }
+  .mc-gate-btn.approve { border-color: var(--success); color: var(--success); }
+  .mc-gate-btn.approve:hover { background: var(--success); color: #000; }
+  .mc-gate-btn.revise { border-color: var(--warning); color: var(--warning); }
+  .mc-gate-btn.revise:hover { background: var(--warning); color: #000; }
+  .mc-gate-btn.reject { border-color: var(--danger); color: var(--danger); }
+  .mc-gate-btn.reject:hover { background: var(--danger); color: #000; }
+
+  .mc-decision-result { margin-top: 12px; font-size: 11px; padding: 8px 12px; border-left: 2px solid var(--signal); color: var(--text-secondary); background: var(--canvas); }
+
+  /* ---------- Strategy Room ---------- */
+  .mc-version { border: 1px solid var(--border); padding: 14px; margin-bottom: 12px; background: var(--canvas); }
+  .mc-version-head { display: flex; justify-content: space-between; font-size: 11px; color: var(--text-secondary); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.05em; }
+  .mc-version-head b { color: var(--text-primary); }
+  .mc-version-body { font-size: 12.5px; color: var(--text-primary); }
+
+  /* ---------- Red Team Terminal ---------- */
+  .mc-verdict { display: inline-block; font-weight: 700; padding: 4px 10px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 16px; }
+  .mc-verdict.PASS { color: var(--success); border: 1px solid var(--success); }
+  .mc-verdict.REVISE { color: var(--warning); border: 1px solid var(--warning); }
+  .mc-verdict.BLOCK { color: var(--danger); border: 1px solid var(--danger); }
+
+  .mc-field-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-secondary); margin-bottom: 6px; margin-top: 16px; }
+  .mc-field-label:first-child { margin-top: 0; }
+  .mc-sev { display: inline-block; font-size: 9px; padding: 2px 6px; margin-left: 8px; text-transform: uppercase; border: 1px solid var(--border); }
+  .mc-sev.LOW { color: var(--success); border-color: var(--success); }
+  .mc-sev.MEDIUM { color: var(--warning); border-color: var(--warning); }
+  .mc-sev.HIGH { color: var(--danger); border-color: var(--danger); }
+  .mc-sev.CRITICAL { color: #fff; background: var(--danger); border-color: var(--danger); }
+
+  .mc-dispute { border-left: 2px solid var(--border); padding: 8px 0 8px 14px; margin-bottom: 10px; background: var(--canvas); }
+  .mc-dispute-claim { font-size: 12px; }
+  .mc-dispute-challenge { font-size: 11.5px; color: var(--text-secondary); margin-top: 4px; }
+
+  .mc-confidence-bar { height: 4px; background: var(--border); margin-top: 6px; position: relative; }
+  .mc-confidence-fill { height: 100%; background: var(--signal); }
+
+  /* ---------- Audit Vault ---------- */
+  .mc-audit-table { width: 100%; border-collapse: collapse; font-size: 11.5px; }
+  .mc-audit-table th { text-align: left; color: var(--text-secondary); font-weight: 400; text-transform: uppercase; letter-spacing: 0.06em; font-size: 10px; padding: 10px 12px; border-bottom: 1px solid var(--border); }
+  .mc-audit-table td { padding: 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  .mc-hash { color: var(--text-secondary); font-size: 10.5px; }
+  .mc-actor-tag { font-size: 9px; padding: 2px 6px; border: 1px solid var(--border); text-transform: uppercase; }
+  .mc-actor-tag.HUMAN { color: var(--signal); border-color: var(--signal); background: rgba(0,240,255,0.03); }
+  .mc-actor-tag.AGENT { color: var(--text-primary); }
+  .mc-actor-tag.SYSTEM { color: var(--text-secondary); }
+
+  .mc-chain-verified { display: flex; align-items: center; gap: 8px; color: var(--success); font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 16px; }
+  .mc-chain-verified .dot { width: 6px; height: 6px; background: var(--success); border-radius: 50%; }
+
+  @media (max-width: 720px) {
+    .mc-grid-3, .mc-grid-2 { grid-template-columns: 1fr; }
+    .mc-mission-row { grid-template-columns: 1fr; row-gap: 6px; }
+  }
+</style>
+</head>
+<body style="margin:0;padding:0;">
+
+<div class="mc-root" id="mc-root">
+  <div class="mc-topbar">
+    <div class="mc-brand">
+      <div class="mc-brand-mark"></div>
+      <div>
+        <div class="mc-brand-name">AI Teams // Meetings Console</div>
+        <div class="mc-brand-sub">Red Rock & Pink House Sisterhood Family</div>
+      </div>
+    </div>
+    <div class="mc-topbar-right">
+      <div class="mc-audit-badge"><span class="mc-audit-dot"></span> Secure L2 Audit Active</div>
+      <div class="mc-commander">Commander: <b>Chris</b></div>
+    </div>
+  </div>
+
+  <div class="mc-nav" id="mc-nav"></div>
+  <div class="mc-body" id="mc-body"></div>
+</div>
+
+<script>
+(function () {
+  const root = document.getElementById('mc-root');
+  const nav = document.getElementById('mc-nav');
+  const body = document.getElementById('mc-body');
+
+  if (!root || !nav || !body) return;
+
+  let active = "dashboard";
+  let gateDecision = null;
+  let dispatchState = "idle";
+  let selectedModels = new Set(["Gemini", "Ruby", "Claude"]);
+
+  const SEATS = [
+    { seat: "Chris", role: "Founder / Commander", authority: "Defines missions and makes final execution calls" },
+    { seat: "Gemini", role: "Chief Creative Director", authority: "Owns creative direction, Ghibli style & strategic narrative" },
+    { seat: "Ruby", role: "Product & Build Strategist", authority: "Converts direction into zero-bloat UI2 architecture" },
+    { seat: "Critic", role: "High-Contrast Red Team", authority: "Challenges assumptions and stress-tests media pipelines" },
+    { seat: "Orchestrator", role: "Chief of Staff", authority: "Routes work, preserves context, & maintains L2 sync" },
+  ];
+
+  const MISSIONS = [
+    { id: "0017", title: "Scale $RIVAL token routing on Base L2", phase: "High-Contrast Review", risk: "medium", gate: "awaiting" },
+    { id: "0016", title: "Deploy 'Allowance' Pixar-style concept asset registry", phase: "Drafting", risk: "low", gate: "locked" },
+    { id: "0015", title: "Automate 'The Sunshine Club' episode distribution", phase: "Strategy", risk: "high", gate: "locked" },
+    { id: "0014", title: "Archive legacy 'RivalEX' Replit scripts", phase: "Archived", risk: "low", gate: "locked" },
+  ];
+
+  const CRITIC_REPORT = {
+    verdict: "REVISE",
+    primaryWeakness: {
+      summary: "Base L2 metadata routing lacks explicit fallback parameters if RPC latency spikes.",
+      severity: "HIGH",
+      rationale: "Without a defined heartbeat check, zero-latency state verification could stall asset distribution."
+    },
+    failureScenario: {
+      trigger: "RPC endpoint timeout during multi-track release upload.",
+      outcome: "OpenRiver bridge fails to sync registry metadata, leaving distribution rails unverified.",
+      earlyWarningSigns: [
+        "Telemetry heartbeat latency exceeds 1.5ms threshold",
+        "Repeated handshake retries between Gateway and OpenRiver nodes"
+      ],
+      mitigation: "Implement serverless edge failover routing directly within AI Teams telemetry."
+    },
+    disputes: [
+      {
+        claim: "Core-outward architecture guarantees complete modular independence.",
+        challenge: "Independence requires strict separation of state without cross-dependency loops.",
+        evidenceNeeded: "A verified build test verifying peer system execution.",
+        severity: "MEDIUM"
+      },
+      {
+        claim: "Commander approval authority is fully preserved.",
+        challenge: "Approval fatigue on automated release scripts could bypass critical checkpoints.",
+        evidenceNeeded: "Audit vault event logs segmented by risk tier.",
+        severity: "LOW"
+      }
+    ],
+    requiredRevisions: [
+      "Add explicit edge failover parameters to OpenRiver bridge scripts.",
+      "Verify zero-bloat execution stack across all active audio nodes."
+    ],
+    confidence: 0.84
+  };
+
+  const AUDIT_EVENTS = [
+    { id: "evt_0091", missionId: "0017", actorType: "HUMAN", actorSeat: "Chris", action: "REQUEST_REVISION", targetVersionId: "v3", rationale: "Ensure Base L2 routing handles latency spikes.", payloadHash: "8f2a1c9e", occurredAt: "01:22:02" },
+    { id: "evt_0090", missionId: "0017", actorType: "AGENT", actorSeat: "Critic", action: "SUBMIT_CRITIQUE", targetVersionId: "v3", payloadHash: "3d9b7f01", occurredAt: "01:21:45" },
+    { id: "evt_0089", missionId: "0017", actorType: "AGENT", actorSeat: "Ruby", action: "SUBMIT_DRAFT", targetVersionId: "v3", payloadHash: "aa11e420", occurredAt: "01:15:11" },
+    { id: "evt_0088", missionId: "0017", actorType: "SYSTEM", actorSeat: "Orchestrator", action: "PHASE_TRANSITION", rationale: "Drafting → RedTeam", payloadHash: "b502f9d3", occurredAt: "01:14:58" },
+    { id: "evt_0087", missionId: "0017", actorType: "AGENT", actorSeat: "Gemini", action: "SUBMIT_STRATEGY", targetVersionId: "v1", payloadHash: "119cde02", occurredAt: "00:50:40" },
+    { id: "evt_0086", missionId: "0017", actorType: "HUMAN", actorSeat: "Chris", action: "DEFINE_MISSION", payloadHash: "004fca88", occurredAt: "00:42:09" },
+  ];
+
+  const VERSIONS = [
+    { v: "v3", seat: "Ruby", note: "Optimized Base L2 metadata registry rails for $RIVAL token transfer." },
+    { v: "v2", seat: "Ruby", note: "Integrated brutalist aesthetic parameters into Pink House One gateway." },
+    { v: "v1", seat: "Gemini", note: "Initial core-outward architectural mapping and audio node framework." },
+  ];
+
+  const SCREENS = [
+    { key: "dashboard", label: "Dashboard" },
+    { key: "console", label: "Commander Console" },
+    { key: "strategy", label: "Strategy Room" },
+    { key: "redteam", label: "Red Team Terminal" },
+    { key: "audit", label: "Audit Vault" },
+  ];
+
+  function riskClass(r) { return "risk-" + r; }
+  function gateClass(g) { return "gate-" + g; }
+
+  function renderNav() {
+    nav.innerHTML = "";
+    SCREENS.forEach(s => {
+      const el = document.createElement("div");
+      el.className = "mc-nav-item" + (active === s.key ? " active" : "");
+      el.textContent = s.label;
+      el.onclick = () => { active = s.key; renderNav(); renderBody(); };
+      nav.appendChild(el);
+    });
+  }
+
+  function renderDashboard() {
+    const openGates = MISSIONS.filter(m => m.gate === "awaiting").length;
+    const highRisk = MISSIONS.filter(m => m.risk === "high").length;
+
+    body.innerHTML = `
+      <div class="mc-grid mc-grid-3" style="margin-bottom: 20px;">
+        <div class="mc-panel"><div class="mc-stat">
+          <div class="mc-stat-value">${MISSIONS.length}</div>
+          <div class="mc-stat-label">Active Missions</div>
+        </div></div>
+        <div class="mc-panel"><div class="mc-stat">
+          <div class="mc-stat-value" style="color:var(--signal)">${openGates}</div>
+          <div class="mc-stat-label">Awaiting Decision Gate</div>
+        </div></div>
+        <div class="mc-panel"><div class="mc-stat">
+          <div class="mc-stat-value" style="color:var(--danger)">${highRisk}</div>
+          <div class="mc-stat-label">High Risk Alerts</div>
+        </div></div>
+      </div>
+
+      <div class="mc-panel">
+        <div class="mc-panel-title">Active AI Teams Missions</div>
+        <div>
+          ${MISSIONS.map(m => `
+            <div class="mc-mission-row" data-id="${m.id}">
+              <div class="mc-mission-id">M-${m.id}</div>
+              <div class="mc-mission-title">${m.title}<span class="mc-mission-phase">${m.phase}</span></div>
+              <div><span class="mc-tag ${riskClass(m.risk)}">${m.risk} risk</span></div>
+              <div><span class="mc-tag ${gateClass(m.gate)}">${m.gate === 'awaiting' ? 'Awaiting Chris' : 'Locked'}</span></div>
+              <div><button class="mc-enter-btn">Enter →</button></div>
+            </div>
+          `).join("")}
+        </div>
+      </div>
+    `;
+    body.querySelectorAll(".mc-mission-row").forEach(row => {
+      row.onclick = () => { active = "console"; renderNav(); renderBody(); };
+    });
+  }
+
+  function renderConsole() {
+    body.innerHTML = `
+      <div class="mc-grid mc-grid-2">
+        <div>
+          <div class="mc-panel">
+            <div class="mc-panel-title">Directive — Mission M-0017</div>
+            <textarea id="mc-directive-input" class="mc-input-area" placeholder="State the directive for AI Teams...">Execute zero-latency deployment for Base L2 token routing and verify telemetry handshake.</textarea>
+            <div class="mc-model-row" id="mc-model-row"></div>
+            <button class="mc-dispatch-btn" id="mc-dispatch-btn">Dispatch to AI Teams</button>
+          </div>
+
+          <div class="mc-panel">
+            <div class="mc-panel-title">Output Stream</div>
+            <div id="mc-processing-row"></div>
+            <div class="mc-output" id="mc-output">Awaiting dispatch.</div>
+          </div>
+        </div>
+
+        <div>
+          <div class="mc-panel">
+            <div class="mc-panel-title">Active Seats</div>
+            ${SEATS.map(s => `
+              <div style="padding:10px 0;border-bottom:1px solid var(--border)">
+                <div style="font-weight:700; color: var(--signal);">${s.seat}</div>
+                <div style="font-size:11px; margin-top:2px;">${s.role}</div>
+                <div style="color:var(--text-secondary);font-size:10.5px;margin-top:2px">${s.authority}</div>
+              </div>
+            `).join("")}
+          </div>
+
+          <div class="mc-gate-box">
+            <div class="mc-gate-label">Commander Decision Gate</div>
+            <div class="mc-gate-actions">
+              <button class="mc-gate-btn approve" data-d="APPROVE">Approve</button>
+              <button class="mc-gate-btn revise" data-d="REVISE">Revise</button>
+              <button class="mc-gate-btn reject" data-d="REJECT">Reject</button>
+            </div>
+            <div id="mc-decision-result"></div>
+          </div>
+        </div>
+      </div>
+    `;
+
+    const modelRow = document.getElementById("mc-model-row");
+    ["Gemini", "Ruby", "Claude", "Grok"].forEach(name => {
+      const chip = document.createElement("div");
+      chip.className = "mc-model-chip" + (selectedModels.has(name) ? " selected" : "");
+      chip.textContent = name;
+      chip.onclick = () => {
+        selectedModels.has(name) ? selectedModels.delete(name) : selectedModels.add(name);
+        renderConsole();
+      };
+      modelRow.appendChild(chip);
+    });
+
+    document.getElementById("mc-dispatch-btn").onclick = () => {
+      dispatchState = "processing";
+      renderConsoleOutput();
+      setTimeout(() => {
+        dispatchState = "done";
+        renderConsoleOutput();
+      }, 1500);
+    };
+
+    body.querySelectorAll(".mc-gate-btn").forEach(btn => {
+      btn.onclick = () => {
+        gateDecision = btn.dataset.d;
+        const result = document.getElementById("mc-decision-result");
+        result.className = "mc-decision-result";
+        result.textContent = `Decision recorded: ${gateDecision} — logged securely to L2 Audit Vault as evt_0092.`;
+        
+        AUDIT_EVENTS.unshift({
+          id: "evt_0092",
+          missionId: "0017",
+          actorType: "HUMAN",
+          actorSeat: "Chris",
+          action: `GATE_${gateDecision}`,
+          targetVersionId: "v3",
+          rationale: `Commander executed immediate decision block: ${gateDecision}`,
+          payloadHash: Math.random().toString(16).substring(2, 10),
+          occurredAt: new Date().toTimeString().split(' ')[0]
+        });
+      };
+    });
+
+    renderConsoleOutput();
+  }
+
+  function renderConsoleOutput() {
+    const pr = document.getElementById("mc-processing-row");
+    const out = document.getElementById("mc-output");
+    if (!pr || !out) return;
+    
+    if (dispatchState === "processing") {
+      pr.innerHTML = `<div class="mc-processing"><span class="mc-processing-dot"></span> AI Teams routing directive to [${[...selectedModels].join(", ")}]...</div>`;
+      out.textContent = "";
+    } else if (dispatchState === "done") {
+      pr.innerHTML = "";
+      out.innerHTML = "AI Teams synthesis complete: Base L2 token routing confirmed nominal. Zero-latency state verified across all peer nodes with automatic failover enabled.<span class=\"mc-cursor\"></span>";
+    } else {
+      pr.innerHTML = "";
+      out.textContent = "Awaiting dispatch.";
+    }
+  }
+
+  function renderStrategy() {
+    body.innerHTML = `
+      <div class="mc-panel">
+        <div class="mc-panel-title">Version History — Mission M-0017</div>
+        ${VERSIONS.map(v => `
+          <div class="mc-version">
+            <div class="mc-version-head"><b>${v.v}</b><span>Seat: ${v.seat}</span></div>
+            <div class="mc-version-body">${v.note}</div>
+          </div>
+        `).join("")}
+      </div>
+    `;
+  }
+
+  function renderRedTeam() {
+    const r = CRITIC_REPORT;
+    body.innerHTML = `
+      <div class="mc-panel">
+        <div class="mc-panel-title">Critic Report — Mission M-0017</div>
+        <div class="mc-verdict ${r.verdict}">${r.verdict}</div>
+
+        <div class="mc-field-label">Primary Weakness <span class="mc-sev ${r.primaryWeakness.severity}">${r.primaryWeakness.severity}</span></div>
+        <div>${r.primaryWeakness.summary}</div>
+        <div style="color:var(--text-secondary);font-size:11.5px;margin-top:4px">${r.primaryWeakness.rationale}</div>
+
+        <div class="mc-field-label">Failure Scenario</div>
+        <div><b>Trigger:</b> ${r.failureScenario.trigger}</div>
+        <div style="margin-top:4px"><b>Outcome:</b> ${r.failureScenario.outcome}</div>
+        <div style="margin-top:4px;color:var(--text-secondary);font-size:11.5px">
+          Early warning signs: ${r.failureScenario.earlyWarningSigns.join(" · ")}
+        </div>
+        <div style="margin-top:4px"><b>Mitigation:</b> ${r.failureScenario.mitigation}</div>
+
+        <div class="mc-field-label">Disputes</div>
+        ${r.disputes.map(d => `
+          <div class="mc-dispute">
+            <div class="mc-dispute-claim">${d.claim} <span class="mc-sev ${d.severity}">${d.severity}</span></div>
+            <div class="mc-dispute-challenge">Challenge: ${d.challenge}</div>
+            <div class="mc-dispute-challenge">Evidence needed: ${d.evidenceNeeded}</div>
+          </div>
+        `).join("")}
+
+        <div class="mc-field-label">Required Revisions</div>
+        <ul style="margin:6px 0 0 18px;padding:0; color: var(--text-secondary);">
+          ${r.requiredRevisions.map(rv => `<li style="margin-bottom:4px; color: var(--text-primary);">${rv}</li>`).join("")}
+        </ul>
+
+        <div class="mc-field-label">Confidence Score</div>
+        <div style="display:flex;align-items:center;gap:10px">
+          <div style="flex:1" class="mc-confidence-bar"><div class="mc-confidence-fill" style="width:${r.confidence * 100}%"></div></div>
+          <div style="font-weight: 700;">${Math.round(r.confidence * 100)}%</div>
+        </div>
+      </div>
+    `;
+  }
+
+  function renderAudit() {
+    body.innerHTML = `
+      <div class="mc-panel">
+        <div class="mc-panel-title">Audit Vault — Mission M-0017</div>
+        <div class="mc-chain-verified"><span class="dot"></span> Hash chain verified — no gaps detected on L2 rails</div>
+        <table class="mc-audit-table">
+          <thead>
+            <tr><th>Time</th><th>Actor</th><th>Action</th><th>Version</th><th>Rationale</th><th>Hash</th></tr>
+          </thead>
+          <tbody>
+            ${AUDIT_EVENTS.map(e => `
+              <tr>
+                <td>${e.occurredAt}</td>
+                <td><span class="mc-actor-tag ${e.actorType}">${e.actorSeat}</span></td>
+                <td>${e.action}</td>
+                <td>${e.targetVersionId || "—"}</td>
+                <td style="color:var(--text-secondary)">${e.rationale || "—"}</td>
+                <td class="mc-hash">${e.payloadHash}</td>
+              </tr>
+            `).join("")}
+          </tbody>
+        </table>
+      </div>
+    `;
+  }
+
+  function renderBody() {
+    if (active === "dashboard") renderDashboard();
+    else if (active === "console") renderConsole();
+    else if (active === "strategy") renderStrategy();
+    else if (active === "redteam") renderRedTeam();
+    else if (active === "audit") renderAudit();
+  }
+
+  renderNav();
+  renderBody();
+})();
+</script>
+</body>
+</html>

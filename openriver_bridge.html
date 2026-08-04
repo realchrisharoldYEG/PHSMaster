@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OpenRiver L2 // Bridge & Marketplace Core</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        orDark: '#070707',
+                        orCard: '#111111',
+                        orBorder: '#222222',
+                        orAccent: '#ff2a5f',
+                        orBaseBlue: '#0052ff'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-orDark text-white font-sans antialiased selection:bg-orAccent selection:text-white">
+
+    <!-- TOP UTILITY HEADER -->
+    <header class="flex justify-between items-center px-8 py-4 border-b border-orBorder bg-orDark/90 backdrop-blur sticky top-0 z-50">
+        <div class="flex items-center space-x-6">
+            <span class="font-black tracking-tighter text-xl text-white">OPEN<span class="text-orAccent">RIVER</span> <span class="text-xs font-mono text-neutral-500">// L2 BRIDGE</span></span>
+            <nav class="hidden md:flex space-x-6 text-sm text-neutral-400">
+                <a href="pinkhouse_test.html" class="hover:text-white transition">&larr; Return to Gateway</a>
+                <a href="#" class="text-white hover:text-orAccent transition">Bridge Terminal</a>
+                <a href="#" class="hover:text-orAccent transition">Asset Registry</a>
+            </nav>
+        </div>
+        <div class="flex items-center space-x-4">
+            <!-- Bridge Connection Status -->
+            <span id="bridge-status-badge" class="text-xs uppercase tracking-widest px-3 py-1 bg-neutral-900 border border-orBaseBlue/50 text-orBaseBlue rounded font-mono">Base L2: Synced</span>
+            <div class="w-8 h-8 rounded-full bg-orAccent flex items-center justify-center font-bold text-xs">OR</div>
+        </div>
+    </header>
+
+    <!-- MAIN BRIDGE INTERFACE -->
+    <main class="max-w-6xl mx-auto px-6 py-16 grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+        <!-- COLUMN 1 & 2: THE TRANSACTION TERMINAL -->
+        <div class="lg:col-span-2 space-y-8">
+            <div class="bg-orCard border border-orBorder p-8">
+                <div class="flex justify-between items-center mb-6 pb-4 border-b border-orBorder">
+                    <div>
+                        <h1 class="text-2xl font-black tracking-tight">ASSET & VALUE TRANSFER TERMINAL</h1>
+                        <p class="text-sm text-neutral-400 mt-1">Route ecosystem assets across the OpenRiver L2 routing layer.</p>
+                    </div>
+                    <span class="text-xs font-mono px-2 py-1 bg-neutral-900 text-neutral-400 border border-orBorder">Gas: 0.001 Gwei</span>
+                </div>
+
+                <!-- Transfer Form -->
+                <div class="space-y-6">
+                    <div>
+                        <label class="block text-xs uppercase tracking-widest text-neutral-400 mb-2 font-mono">Source Protocol Node</label>
+                        <select class="w-full bg-orDark border border-orBorder rounded-none px-4 py-3 text-sm text-white focus:outline-none focus:border-orAccent transition font-mono">
+                            <option>Pink House One Core Registry</option>
+                            <option>$RIVAL Token Contract (Base Network)</option>
+                            <option>Audio Original Archives (Bandcamp/YouTube)</option>
+                        </select>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs uppercase tracking-widest text-neutral-400 mb-2 font-mono">Asset Type</label>
+                            <input type="text" value="ERC-721 / Metadata Node" readonly class="w-full bg-neutral-900 border border-orBorder rounded-none px-4 py-3 text-sm text-neutral-400 font-mono">
+                        </div>
+                        <div>
+                            <label class="block text-xs uppercase tracking-widest text-neutral-400 mb-2 font-mono">Routing Target</label>
+                            <input type="text" placeholder="0x... Destination Address" class="w-full bg-orDark border border-orBorder rounded-none px-4 py-3 text-sm text-white placeholder-neutral-600 focus:outline-none focus:border-orAccent transition font-mono">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs uppercase tracking-widest text-neutral-400 mb-2 font-mono">Payload Manifest (Metadata URI)</label>
+                        <textarea rows="3" class="w-full bg-orDark border border-orBorder rounded-none px-4 py-3 text-sm text-white placeholder-neutral-600 focus:outline-none focus:border-orAccent transition font-mono" placeholder="ipfs://... or local ecosystem reference hash"></textarea>
+                    </div>
+
+                    <button id="execute-bridge-btn" class="w-full py-4 bg-white text-black font-black uppercase tracking-wider text-sm hover:bg-orAccent hover:text-white transition">
+                        Initialize L2 Bridge Transfer
+                    </button>
+                </div>
+            </div>
+
+            <!-- LIVE TRANSACTION TELEMETRY FEED -->
+            <div class="bg-orCard border border-orBorder p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-sm font-bold uppercase tracking-wider font-mono text-neutral-300">Live Bridge Telemetry Log</h3>
+                    <span class="text-[10px] uppercase font-mono text-emerald-400 animate-pulse">● Live Stream Active</span>
+                </div>
+                <div id="telemetry-log" class="bg-orDark border border-orBorder p-4 font-mono text-xs text-neutral-400 h-36 overflow-y-auto space-y-2">
+                    <div>[00:00:01] OPENRIVER_DAEMON: Initializing L2 bridge sockets...</div>
+                    <div>[00:00:02] BASE_RPC: Connected to node validator pool [Latency: 12ms]</div>
+                    <div>[00:00:03] REGISTRY: Metadata mapping table loaded successfully.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- COLUMN 3: ECOSYSTEM ASSET NODES & STATS -->
+        <div class="space-y-6">
+            <div class="bg-orCard border border-orBorder p-6">
+                <h3 class="text-sm font-bold uppercase tracking-wider font-mono mb-4 text-neutral-300">Active Asset Nodes</h3>
+                
+                <div class="space-y-4">
+                    <div class="p-4 bg-orDark border border-orBorder">
+                        <div class="flex justify-between items-start mb-1">
+                            <span class="text-xs font-bold text-white">$RIVAL Token</span>
+                            <span class="text-[10px] font-mono text-orAccent">Base L2</span>
+                        </div>
+                        <p class="text-xs text-neutral-400">Ecosystem currency & creative merchandise backing.</p>
+                        <div class="mt-3 pt-3 border-t border-orBorder flex justify-between text-[10px] font-mono text-neutral-500">
+                            <span>Supply: Immutable</span>
+                            <span class="text-emerald-400">Verified</span>
+                        </div>
+                    </div>
+
+                    <div class="p-4 bg-orDark border border-orBorder">
+                        <div class="flex justify-between items-start mb-1">
+                            <span class="text-xs font-bold text-white">The Sunshine Club</span>
+                            <span class="text-[10px] font-mono text-neutral-400">Audio Series</span>
+                        </div>
+                        <p class="text-xs text-neutral-400">Multi-episode audio original pilot & drama drops.</p>
+                        <div class="mt-3 pt-3 border-t border-orBorder flex justify-between text-[10px] font-mono text-neutral-500">
+                            <span>Status: Streaming</span>
+                            <span class="text-emerald-400">Synced</span>
+                        </div>
+                    </div>
+
+                    <div class="p-4 bg-orDark border border-orBorder">
+                        <div class="flex justify-between items-start mb-1">
+                            <span class="text-xs font-bold text-white">Sincerely, Yours</span>
+                            <span class="text-[10px] font-mono text-neutral-400">Studio Master</span>
+                        </div>
+                        <p class="text-xs text-neutral-400">Live-recorded multi-track release node.</p>
+                        <div class="mt-3 pt-3 border-t border-orBorder flex justify-between text-[10px] font-mono text-neutral-500">
+                            <span>Status: Published</span>
+                            <span class="text-emerald-400">Synced</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- NETWORK METRICS -->
+            <div class="bg-orCard border border-orBorder p-6 font-mono text-xs space-y-3">
+                <div class="flex justify-between text-neutral-400">
+                    <span>Protocol Health:</span>
+                    <span class="text-emerald-400">100% Optimal</span>
+                </div>
+                <div class="flex justify-between text-neutral-400">
+                    <span>Bridge Routing Speed:</span>
+                    <span class="text-white">Sub-second</span>
+                </div>
+                <div class="flex justify-between text-neutral-400">
+                    <span>Network Layer:</span>
+                    <span class="text-orBaseBlue">Base Mainnet/L2</span>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="border-t border-orBorder py-8 text-center text-xs text-neutral-500 tracking-wider font-mono">
+        OPENRIVER L2 PROTOCOL // POWERED BY BASE // RED ROCK & PINK HOUSE SISTERHOOD FAMILY &copy; 2026.
+    </footer>
+
+    <!-- OPENRIVER UI2 BACKEND LOGIC SCRIPT -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log("⚡ [OpenRiver UI2 Initialized]: Bridge transaction daemon online.");
+
+            const bridgeButton = document.getElementById('execute-bridge-btn');
+            const telemetryLog = document.getElementById('telemetry-log');
+            const statusBadge = document.getElementById('bridge-status-badge');
+
+            const logEvent = (message) => {
+                const timestamp = new Date().toTimeString().split(' ')[0];
+                const logEntry = document.createElement('div');
+                logEntry.innerText = `[${timestamp}] ${message}`;
+                telemetryLog.appendChild(logEntry);
+                telemetryLog.scrollTop = telemetryLog.scrollHeight;
+            };
+
+            // Simulate incoming bridge transactions or telemetry pings
+            setInterval(() => {
+                const events = [
+                    "BRIDGE_SYNC: Block header verified on Base L2.",
+                    "ASSET_NODE: Metadata registry integrity check passed.",
+                    "ROUTER_PING: Zero-latency heartbeat confirmed with gateway.",
+                    "CACHE_FLUSH: OpenRiver peripheral memory optimized."
+                ];
+                if (Math.random() > 0.6) {
+                    const randomEvent = events[Math.floor(Math.random() * events.length)];
+                    logEvent(randomEvent);
+                }
+            }, 8000);
+
+            // Bridge Execution Handler
+            bridgeButton.addEventListener('click', () => {
+                logEvent("USER_ACTION: Initiating L2 asset wrapping sequence...");
+                bridgeButton.innerText = "VERIFYING BLOCKCHAIN STATE...";
+                bridgeButton.style.backgroundColor = "#0052ff";
+                bridgeButton.style.color = "#ffffff";
+
+                setTimeout(() => {
+                    logEvent("BASE_RPC: Executing smart contract payload transfer...");
+                    bridgeButton.innerText = "ROUTING THROUGH OPENRIVER...";
+                }, 1000);
+
+                setTimeout(() => {
+                    logEvent("SUCCESS: Asset successfully bridged and registered on L2 node.");
+                    bridgeButton.innerText = "TRANSFER COMPLETE [0ms]";
+                    bridgeButton.style.backgroundColor = "#ff2a5f";
+
+                    setTimeout(() => {
+                        bridgeButton.innerText = "Initialize L2 Bridge Transfer";
+                        bridgeButton.style.backgroundColor = "";
+                        bridgeButton.style.color = "";
+                    }, 2000);
+                }, 2500);
+            });
+        });
+    </script>
+</body>
+</html>
