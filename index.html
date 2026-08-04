@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Red Rock & Pink House Sisterhood Family // Ecosystem Router</title>
+<style>
+  :root {
+    --canvas: #050505;
+    --surface: #0e0e0e;
+    --surface-raised: #141414;
+    --text-primary: #ffffff;
+    --text-secondary: #a3a3a3;
+    --border: #1f1f1f;
+    --signal: #00f0ff;
+    --accent: #ff2a5f;
+    --success: #4dff88;
+    --font-interface: "Geist Mono", "JetBrains Mono", monospace;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    background: var(--canvas);
+    color: var(--text-primary);
+    font-family: var(--font-interface);
+    font-size: 13px;
+    line-height: 1.5;
+    margin: 0;
+    padding: 0;
+    letter-spacing: 0.01em;
+  }
+
+  body ::selection { background: var(--accent); color: #fff; }
+
+  .root-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 24px;
+  }
+
+  /* Header */
+  .root-header {
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 24px;
+    margin-bottom: 32px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+  }
+  .root-title-group {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .root-mark {
+    width: 12px;
+    height: 12px;
+    background: var(--accent);
+  }
+  .root-title {
+    font-size: 14px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+  }
+  .root-sub {
+    font-size: 10.5px;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-top: 2px;
+  }
+  .root-status {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--success);
+    border: 1px solid var(--success);
+    padding: 6px 12px;
+    background: rgba(77, 255, 136, 0.03);
+  }
+  .root-status-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--success);
+    animation: pulse 1.8s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.25; }
+  }
+
+  /* Node Grid */
+  .node-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+  .node-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: border-color 0.15s ease, background 0.15s ease;
+    text-decoration: none;
+    color: inherit;
+    position: relative;
+  }
+  .node-card:hover {
+    border-color: var(--signal);
+    background: var(--surface-raised);
+  }
+  .node-card.atelier:hover {
+    border-color: var(--accent);
+  }
+  .node-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 16px;
+  }
+  .node-id {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-secondary);
+  }
+  .node-badge {
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding: 3px 8px;
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+  }
+  .node-card:hover .node-badge {
+    border-color: var(--signal);
+    color: var(--signal);
+  }
+  .node-card.atelier:hover .node-badge {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+  .node-name {
+    font-size: 16px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 8px;
+  }
+  .node-desc {
+    font-size: 12.5px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+    margin-bottom: 24px;
+  }
+  .node-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    border-top: 1px solid var(--border);
+    padding-top: 16px;
+    color: var(--text-primary);
+  }
+  .node-action {
+    color: var(--signal);
+    font-weight: 700;
+  }
+  .node-card.atelier .node-action {
+    color: var(--accent);
+  }
+
+  /* Footer Meta */
+  .root-footer-meta {
+    margin-top: 40px;
+    border-top: 1px solid var(--border);
+    padding-top: 20px;
+    display: flex;
+    justify-content: space-between;
+    font-size: 10px;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  @media (max-width: 768px) {
+    .node-grid { grid-template-columns: 1fr; }
+    .root-header { flex-direction: column; align-items: flex-start; gap: 16px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="root-container">
+  <div class="root-header">
+    <div class="root-title-group">
+      <div class="root-mark"></div>
+      <div>
+        <div class="root-title">Red Rock &amp; Pink House Sisterhood Family</div>
+        <div class="root-sub">Core-Outward Sovereign Architecture // Root Master Index</div>
+      </div>
+    </div>
+    <div class="root-status">
+      <div class="root-status-dot"></div>
+      All Nodes Nominal
+    </div>
+  </div>
+
+  <div class="node-grid">
+    <!-- Node 01: Gateway -->
+    <a href="PinkHouseOne/pinkhouse.html" class="node-card">
+      <div>
+        <div class="node-header">
+          <span class="node-id">Node // 01</span>
+          <span class="node-badge">Media Gateway</span>
+        </div>
+        <div class="node-name">Pink House One</div>
+        <div class="node-desc">High-velocity digital media gateway, audio archives, streaming logs, and UI2 search filter engine.</div>
+      </div>
+      <div class="node-footer">
+        <span>Protocol: HTTPS / Static</span>
+        <span class="node-action">Enter Node →</span>
+      </div>
+    </a>
+
+    <!-- Node 02: OpenRiver -->
+    <a href="./openriver/index.html" class="node-card">
+      <div>
+        <div class="node-header">
+          <span class="node-id">Node // 02</span>
+          <span class="node-badge">L2 Bridge</span>
+        </div>
+        <div class="node-name">OpenRiver L2</div>
+        <div class="node-desc">Base network asset bridge, $RIVAL token registry rails, and zero-latency metadata synchronizer.</div>
+      </div>
+      <div class="node-footer">
+        <span>Protocol: Base L2 / RPC</span>
+        <span class="node-action">Enter Node →</span>
+      </div>
+    </a>
+
+    <!-- Node 03: AI Teams -->
+    <a href="AI Teams/ai_command.html" class="node-card">
+      <div>
+        <div class="node-header">
+          <span class="node-id">Node // 03</span>
+          <span class="node-badge">Multi-Agent Core</span>
+        </div>
+        <div class="node-name">AI Teams Command</div>
+        <div class="node-desc">Telemetry hub, mission command console, Red Team reporting, and cryptographic L2 audit vault (`ai_meetings.html`).</div>
+      </div>
+      <div class="node-footer">
+        <span>Protocol: UI2 / Secure State</span>
+        <span class="node-action">Enter Node →</span>
+      </div>
+    </a>
+
+    <!-- Node 04: Apparel Atelier -->
+    <a href="./atelier/index.html" class="node-card atelier">
+      <div>
+        <div class="node-header">
+          <span class="node-id">Node // 04</span>
+          <span class="node-badge">Physical Goods</span>
+        </div>
+        <div class="node-name">Pink House Apparel Atelier</div>
+        <div class="node-desc">Brutalist merch vault, token-gated streetwear drops, physical asset verification, and collection lookbooks.</div>
+      </div>
+      <div class="node-footer">
+        <span>Protocol: Commerce / Web3</span>
+        <span class="node-action">Enter Atelier →</span>
+      </div>
+    </a>
+  </div>
+
+  <div class="root-footer-meta">
+    <div>Commander: Chris // Cash The Prophet</div>
+    <div>System Build: 2026.07 // Zero-Bloat Stack</div>
+  </div>
+</div>
+
+</body>
+</html>
