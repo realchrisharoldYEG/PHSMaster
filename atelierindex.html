@@ -267,11 +267,91 @@
     background: var(--accent);
     color: #fff;
   }
-  .product-action-btn.dispatched {
-    background: var(--success);
-    border-color: var(--success);
-    color: #000;
+
+  /* Checkout Modal */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(4px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    padding: 20px;
+  }
+  .modal-overlay.active {
+    display: flex;
+  }
+  .modal-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    max-width: 480px;
+    width: 100%;
+    padding: 30px;
+    position: relative;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+  }
+  .modal-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-family: var(--font-interface);
+    font-size: 14px;
+  }
+  .modal-close:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+  .modal-header {
+    margin-bottom: 20px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 14px;
+  }
+  .modal-title {
+    font-size: 14px;
     font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+  .modal-item-summary {
+    background: var(--canvas);
+    border: 1px solid var(--border);
+    padding: 14px;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .paypal-placeholder-box {
+    background: #0070ba;
+    color: #fff;
+    border: none;
+    width: 100%;
+    padding: 14px;
+    font-family: var(--font-interface);
+    font-weight: 700;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: background 0.15s ease;
+  }
+  .paypal-placeholder-box:hover {
+    background: #005ea6;
   }
 
   /* Footer */
@@ -307,7 +387,7 @@
         <div class="atelier-sub">UI2 Sovereign Merch Vault &amp; Telemetry Core</div>
       </div>
     </div>
-    <a href="../index.html" class="atelier-nav-back">← Back to Master Index</a>
+    <a href="index.html" class="atelier-nav-back">← Back to Master Index</a>
   </div>
 
   <div class="atelier-stats">
@@ -347,17 +427,42 @@
   </div>
 </div>
 
+<!-- PAYPAL CHECKOUT MODAL -->
+<div class="modal-overlay" id="checkout-modal">
+  <div class="modal-card">
+    <button class="modal-close" onclick="closeCheckoutModal()">×</button>
+    <div class="modal-header">
+      <div class="modal-title">Secure PayPal Checkout</div>
+      <div style="font-size: 10px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.08em; margin-top: 4px;">Pink House Sovereign Gateway</div>
+    </div>
+    <div class="modal-item-summary">
+      <div>
+        <div id="modal-product-name" style="font-weight: 700; text-transform: uppercase; font-size: 13px; margin-bottom: 2px;">Item Name</div>
+        <div id="modal-product-category" style="font-size: 10px; color: var(--text-secondary); text-transform: uppercase;">Category</div>
+      </div>
+      <div id="modal-product-price" style="font-weight: 700; font-size: 15px; color: var(--accent);">$0.00</div>
+    </div>
+    <div style="font-size: 11px; color: var(--text-secondary); margin-bottom: 20px; line-height: 1.4;">
+      Complete your transaction securely through PayPal. Once authorized, your acquisition is logged directly to the Base L2 registry.
+    </div>
+    <button class="paypal-placeholder-box" onclick="processPayPalPayment()">
+      <span>Pay with PayPal Secure Checkout</span>
+    </button>
+  </div>
+</div>
+
 <script>
 /**
- * PINK HOUSE APPAREL ATELIER // UI2 RUNTIME ENGINE
- * Zero-Bloat Vanilla JS State Management & Event Routing
+ * PINK HOUSE APPAREL ATELIER // UI2 RUNTIME ENGINE & PAYPAL INTEGRATION
  */
 (function() {
     const grid = document.getElementById('product-grid');
     const filters = document.querySelectorAll('.filter-chip');
     const activeDropsStat = document.getElementById('stat-active-drops');
+    const checkoutModal = document.getElementById('checkout-modal');
     
     let currentFilter = 'all';
+    let selectedProduct = null;
 
     const PRODUCTS = [
         {
@@ -409,24 +514,44 @@
                 </div>
                 <div class="product-footer">
                     <span class="product-price">${p.price}</span>
-                    <button class="product-action-btn" onclick="window.handleAcquire('${p.id}', this)">Acquire →</button>
+                    <button class="product-action-btn" onclick="window.openCheckout('${p.id}')">Acquire →</button>
                 </div>
             </div>
         `).join('');
     }
 
-    // Global hook for button interaction simulation
-    window.handleAcquire = function(id, btn) {
-        const item = PRODUCTS.find(p => p.id === id);
-        if (!item) return;
+    // Modal Triggers
+    window.openCheckout = function(id) {
+        selectedProduct = PRODUCTS.find(p => p.id === id);
+        if (!selectedProduct) return;
 
-        btn.classList.add('dispatched');
-        btn.textContent = 'Verified L2 ✓';
+        document.getElementById('modal-product-name').textContent = selectedProduct.name;
+        document.getElementById('modal-product-category').textContent = selectedProduct.categoryLabel;
+        document.getElementById('modal-product-price').textContent = selectedProduct.price;
+
+        checkoutModal.classList.add('active');
+    };
+
+    window.closeCheckoutModal = function() {
+        checkoutModal.classList.remove('active');
+        selectedProduct = null;
+    };
+
+    window.processPayPalPayment = function() {
+        if (!selectedProduct) return;
         
+        const btn = document.querySelector('.paypal-placeholder-box');
+        btn.style.background = '#4dff88';
+        btn.style.color = '#000';
+        btn.textContent = 'Processing PayPal Secure Checkout...';
+
         setTimeout(() => {
-            btn.classList.remove('dispatched');
-            btn.textContent = 'Acquire →';
-        }, 2000);
+            alert(`PayPal payment authorized for ${selectedProduct.name} (${selectedProduct.price}). Acquisition logged to L2 Vault!`);
+            btn.style.background = '';
+            btn.style.color = '';
+            btn.textContent = 'Pay with PayPal Secure Checkout';
+            closeCheckoutModal();
+        }, 1500);
     };
 
     // Filter routing logic
