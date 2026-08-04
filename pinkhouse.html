@@ -14,7 +14,8 @@
                         phDark: '#0a0a0a',
                         phCard: '#141414',
                         phBorder: '#262626',
-                        phAccent: '#ff2a5f'
+                        phAccent: '#ff2a5f',
+                        phHotPink: '#ff007f'
                     }
                 }
             }
@@ -30,13 +31,15 @@
             <nav class="hidden md:flex space-x-6 text-sm text-neutral-400">
                 <a href="index.html" class="text-white hover:text-phAccent transition">Ecosystem</a>
                 <a href="openriverindex.html" class="hover:text-phAccent transition">OpenRiver L2</a>
-                <a href="ai_command.html" class="hover:text-phAccent transition">AI Command</a>
+                <a href="#" onclick="openUserPortal(); return false;" id="nav-ai-command" class="hover:text-phAccent transition">AI Command</a>
                 <a href="atelierindex.html" class="hover:text-phAccent transition">Atelier</a>
             </nav>
         </div>
         <div class="flex items-center space-x-4">
-            <span class="text-xs uppercase tracking-widest px-2 py-1 bg-phBorder text-neutral-300 rounded">Base L2 Connected</span>
-            <div class="w-8 h-8 rounded-full bg-phAccent flex items-center justify-center font-bold text-xs">CP</div>
+            <button onclick="openUserPortal()" class="flex items-center space-x-2 bg-phBorder hover:bg-neutral-800 px-3 py-1.5 rounded transition border border-phBorder">
+                <span id="header-tier-badge" class="text-xs uppercase tracking-widest px-2 py-0.5 bg-phAccent text-white font-bold rounded">Free Tier</span>
+                <div class="w-6 h-6 rounded-full bg-phAccent flex items-center justify-center font-bold text-[10px]">CP</div>
+            </button>
         </div>
     </header>
 
@@ -81,9 +84,9 @@
                             <span class="text-[10px] uppercase tracking-widest text-phAccent">Audio Original Series</span>
                             <p class="text-sm font-semibold mt-1">Pilot Episode: Pay the Mortgage</p>
                         </div>
-                        <a href="/cloud/audio/sunshine-club-pilot.mp3" class="mt-4 block text-center w-full py-2 bg-white text-black font-bold uppercase text-xs hover:bg-phAccent hover:text-white transition">
+                        <button onclick="handleCloudStream('/cloud/audio/sunshine-club-pilot.mp3')" class="mt-4 block text-center w-full py-2 bg-white text-black font-bold uppercase text-xs hover:bg-phAccent hover:text-white transition">
                             Stream Cloud Audio
-                        </a>
+                        </button>
                     </div>
                 </div>
 
@@ -98,9 +101,9 @@
                             <span class="text-[10px] uppercase tracking-widest text-phAccent">Studio Album</span>
                             <p class="text-sm font-semibold mt-1">Live-Recorded Multi-Track Master</p>
                         </div>
-                        <a href="/cloud/audio/sincerely-yours-master.mp3" class="mt-4 block text-center w-full py-2 bg-white text-black font-bold uppercase text-xs hover:bg-phAccent hover:text-white transition">
+                        <button onclick="handleCloudStream('/cloud/audio/sincerely-yours-master.mp3')" class="mt-4 block text-center w-full py-2 bg-white text-black font-bold uppercase text-xs hover:bg-phAccent hover:text-white transition">
                             Stream Cloud Audio
-                        </a>
+                        </button>
                     </div>
                 </div>
 
@@ -108,16 +111,16 @@
                 <div class="bg-phCard border border-phBorder group hover:border-white transition flex flex-col">
                     <div class="h-48 bg-neutral-900 flex items-center justify-center relative overflow-hidden">
                         <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
-                        <span class="relative font-bold tracking-tight text-lg">RED: THE LARGEST LOVE STORY</span>
+                        <span class="relative font-bold tracking-tight text-lg">RED: THE STORY</span>
                     </div>
                     <div class="p-4 flex flex-col flex-grow justify-between">
                         <div>
                             <span class="text-[10px] uppercase tracking-widest text-phAccent">Immersive Doc</span>
                             <p class="text-sm font-semibold mt-1">The Largest Love Story</p>
                         </div>
-                        <a href="https://www.youtube.com/watch?v=8bWBgHzOxYE&t=1614s" class="mt-4 block text-center w-full py-2 bg-white text-black font-bold uppercase text-xs hover:bg-phAccent hover:text-white transition">
-                            Stream YouTube Audio
-                        </a>
+                        <button onclick="handleCloudStream('/cloud/audio/red-documentary.mp3')" class="mt-4 block text-center w-full py-2 bg-white text-black font-bold uppercase text-xs hover:bg-phAccent hover:text-white transition">
+                            Stream Cloud Audio
+                        </button>
                     </div>
                 </div>
 
@@ -132,9 +135,9 @@
                             <span class="text-[10px] uppercase tracking-widest text-phAccent">Pixar-Style Concept</span>
                             <p class="text-sm font-semibold mt-1">Golden Compass Narrative</p>
                         </div>
-                        <a href="/cloud/audio/allowance-concept.mp3" class="mt-4 block text-center w-full py-2 bg-white text-black font-bold uppercase text-xs hover:bg-phAccent hover:text-white transition">
+                        <button onclick="handleCloudStream('/cloud/audio/allowance-concept.mp3')" class="mt-4 block text-center w-full py-2 bg-white text-black font-bold uppercase text-xs hover:bg-phAccent hover:text-white transition">
                             Stream Cloud Audio
-                        </a>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -154,9 +157,9 @@
                     <h3 id="media-title" class="text-2xl md:text-3xl font-black tracking-tight mb-2">The Sunshine Club</h3>
                     <p id="media-description" class="text-neutral-400 text-sm md:text-base mb-6">Pay the Mortgage — Direct master streaming live from cloud storage repository.</p>
                     <div class="flex items-center space-x-4">
-                        <a id="media-link" href="/cloud/audio/sunshine-club-pilot.mp3" class="px-6 py-3 bg-white text-black font-bold uppercase text-xs tracking-wider hover:bg-phAccent hover:text-white transition inline-block">
+                        <button id="media-link-btn" onclick="handleCloudStream('/cloud/audio/sunshine-club-pilot.mp3')" class="px-6 py-3 bg-white text-black font-bold uppercase text-xs tracking-wider hover:bg-phAccent hover:text-white transition inline-block cursor-pointer">
                             Stream Cloud Audio
-                        </a>
+                        </button>
                         <div class="flex space-x-2">
                             <button onclick="prevMedia()" class="w-10 h-10 border border-phBorder flex items-center justify-center hover:bg-phBorder transition text-neutral-300">&larr;</button>
                             <button onclick="nextMedia()" class="w-10 h-10 border border-phBorder flex items-center justify-center hover:bg-phBorder transition text-neutral-300">&rarr;</button>
@@ -198,15 +201,15 @@
                     </div>
                 </div>
 
-                <div class="bg-phCard border border-phBorder p-6 flex flex-col justify-between">
+                <div class="bg-phCard border border-phBorder p-6 flex flex-col justify-between group hover:border-white transition">
                     <div>
                         <div class="text-xs font-mono text-neutral-500 mb-2">TELEMETRY & COMMAND</div>
                         <h3 class="text-lg font-bold mb-1">AI Teams Hub</h3>
-                        <p class="text-sm text-neutral-400">Monitor internal deployment scripts, analytics tracking, and automated asset compilation.</p>
+                        <p class="text-sm text-neutral-400">Monitor internal deployment scripts, analytics tracking, and automated asset compilation. <span class="text-phAccent block mt-1 text-xs">Requires Hot Pink Tier</span></p>
                     </div>
                     <div class="mt-6 pt-4 border-t border-phBorder flex justify-between items-center">
-                        <span class="font-mono text-sm text-emerald-400">Online</span>
-                        <a href="ai_command.html" class="px-4 py-1.5 bg-neutral-800 hover:bg-white hover:text-black font-bold uppercase text-xs transition inline-block text-center">Access Console</a>
+                        <span id="ai-hub-status" class="font-mono text-sm text-neutral-400">Locked</span>
+                        <button onclick="accessAITeams()" class="px-4 py-1.5 bg-neutral-800 hover:bg-white hover:text-black font-bold uppercase text-xs transition inline-block text-center">Access Console</button>
                     </div>
                 </div>
 
@@ -232,8 +235,103 @@
         PINK HOUSE ONE // RED ROCK & PINK HOUSE SISTERHOOD FAMILY &copy; 2026. ALL RIGHTS RESERVED.
     </footer>
 
-    <!-- ROTATING MEDIA CONTROLLER SCRIPT (CLOUD-DIRECTED) -->
+    <!-- USER PORTAL / SUBSCRIPTION MODAL -->
+    <div id="user-portal-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-phCard border border-phBorder max-w-2xl w-full p-8 relative shadow-2xl">
+            <button onclick="closeUserPortal()" class="absolute top-4 right-4 text-neutral-400 hover:text-white text-xl font-bold">&times;</button>
+            
+            <div class="mb-6 border-b border-phBorder pb-4">
+                <span class="text-xs font-mono uppercase tracking-widest text-phAccent">Ecosystem Account Management</span>
+                <h2 class="text-2xl font-black mt-1">User Portal & Subscriptions</h2>
+            </div>
+
+            <!-- Current Tier Status Box -->
+            <div class="bg-phDark border border-phBorder p-4 mb-6 flex justify-between items-center">
+                <div>
+                    <span class="text-xs text-neutral-400 uppercase tracking-wider block">Active Tier</span>
+                    <span id="portal-current-tier-name" class="text-lg font-black text-white">Free Tier</span>
+                </div>
+                <div id="portal-usage-display" class="text-right">
+                    <span class="text-xs text-neutral-400 uppercase tracking-wider block">Streaming Time Left</span>
+                    <span id="portal-time-left" class="font-mono text-phAccent font-bold">59m remaining</span>
+                </div>
+            </div>
+
+            <!-- Tier Selection Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                <!-- Free Tier Card -->
+                <div onclick="switchTier('free')" id="tier-card-free" class="border border-phBorder bg-phDark p-4 cursor-pointer hover:border-white transition flex flex-col justify-between">
+                    <div>
+                        <div class="font-bold text-sm mb-1">Free Tier</div>
+                        <p class="text-xs text-neutral-400 mb-4">1 hr streaming every 30 days. Access to Pink House One, Atelier & OpenRiver.</p>
+                    </div>
+                    <button class="w-full py-1.5 bg-neutral-800 text-xs font-bold uppercase tracking-wider">Active</button>
+                </div>
+
+                <!-- Pink Tier Card -->
+                <div onclick="switchTier('pink')" id="tier-card-pink" class="border border-phBorder bg-phDark p-4 cursor-pointer hover:border-white transition flex flex-col justify-between">
+                    <div>
+                        <div class="font-bold text-sm mb-1 text-phAccent">Pink Tier</div>
+                        <p class="text-xs text-neutral-400 mb-4">Unlimited streaming with ads. Full ecosystem playback access.</p>
+                    </div>
+                    <button class="w-full py-1.5 bg-white text-black hover:bg-phAccent hover:text-white text-xs font-bold uppercase tracking-wider transition">Select Pink</button>
+                </div>
+
+                <!-- Hot Pink Tier Card -->
+                <div onclick="switchTier('hotpink')" id="tier-card-hotpink" class="border border-phBorder bg-phDark p-4 cursor-pointer hover:border-white transition flex flex-col justify-between">
+                    <div>
+                        <div class="font-bold text-sm mb-1 text-pink-400">Hot Pink Tier</div>
+                        <p class="text-xs text-neutral-400 mb-4">Unlimited ad-free streaming + full access to AI Teams Hub.</p>
+                    </div>
+                    <button class="w-full py-1.5 bg-phHotPink text-white text-xs font-bold uppercase tracking-wider transition">Select Hot Pink</button>
+                </div>
+            </div>
+
+            <div class="text-center">
+                <button onclick="closeUserPortal()" class="px-6 py-2.5 bg-white text-black font-bold uppercase text-xs tracking-wider hover:bg-phAccent hover:text-white transition">
+                    Save & Return to Hub
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- AD OVERLAY MODAL -->
+    <div id="ad-modal" class="fixed inset-0 bg-black/90 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-phCard border border-phAccent max-w-lg w-full p-8 text-center relative shadow-2xl">
+            <span class="text-xs font-mono uppercase tracking-widest text-phAccent px-2 py-1 bg-phBorder rounded">Sponsored Ecosystem Ad</span>
+            <h3 class="text-2xl font-black mt-4 mb-2">Red Rock & Pink House Sisterhood</h3>
+            <p class="text-neutral-400 text-sm mb-6">Support independent multi-track audio creation and digital asset governance on Base L2.</p>
+            <div class="py-4 bg-phDark border border-phBorder mb-6 font-mono text-xs text-neutral-300">
+                Ad playing... <span id="ad-countdown" class="text-phAccent font-bold">5</span>s remaining
+            </div>
+            <button id="skip-ad-btn" disabled class="px-6 py-2 bg-neutral-800 text-neutral-500 font-bold uppercase text-xs tracking-wider cursor-not-allowed transition">
+                Please Wait...
+            </button>
+        </div>
+    </div>
+
+    <!-- AI TEAMS LOCKED MODAL -->
+    <div id="ai-locked-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-phCard border border-phBorder max-w-md w-full p-6 text-center relative shadow-2xl">
+            <span class="text-xs font-mono uppercase tracking-widest text-phAccent">Access Restricted</span>
+            <h3 class="text-xl font-bold mt-2 mb-2">Hot Pink Tier Required</h3>
+            <p class="text-neutral-400 text-sm mb-6">AI Teams Hub telemetry and console access requires the <span class="text-pink-400 font-bold">Hot Pink</span> subscription tier.</p>
+            <div class="flex justify-center space-x-4">
+                <button onclick="closeAILockedModal()" class="px-4 py-2 bg-neutral-800 text-white font-bold uppercase text-xs">Close</button>
+                <button onclick="closeAILockedModal(); openUserPortal();" class="px-4 py-2 bg-phHotPink text-white font-bold uppercase text-xs">Upgrade Now</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ROTATING MEDIA CONTROLLER SCRIPT & SUBSCRIPTION LOGIC -->
     <script>
+        // State Management
+        let userState = {
+            tier: 'free', // 'free', 'pink', 'hotpink'
+            freeMinutesRemaining: 60, // 60 minutes out of 60 allowed per 30 days
+            lastResetDate: new Date().toISOString()
+        };
+
         const mediaItems = [
             {
                 badge: "Audio Drama Pilot",
@@ -246,8 +344,8 @@
                 badge: "Immersive Documentary",
                 title: "Red: The Largest Love Story",
                 description: "Multi-track audio original narrative project hosted directly in the cloud.",
-                link: "https://www.youtube.com/watch?v=8bWBgHzOxYE&t=1614s",
-                ctaText: "Stream YouTube Audio"
+                link: "/cloud/audio/red-documentary.mp3",
+                ctaText: "Stream Cloud Audio"
             },
             {
                 badge: "Studio Release",
@@ -265,7 +363,7 @@
             const badge = document.getElementById('media-badge');
             const title = document.getElementById('media-title');
             const description = document.getElementById('media-description');
-            const link = document.getElementById('media-link');
+            const linkBtn = document.getElementById('media-link-btn');
 
             card.style.opacity = '0';
             
@@ -274,8 +372,8 @@
                 badge.textContent = item.badge;
                 title.textContent = item.title;
                 description.textContent = item.description;
-                link.href = item.link;
-                link.textContent = item.ctaText;
+                linkBtn.setAttribute('onclick', `handleCloudStream('${item.link}')`);
+                linkBtn.textContent = "Stream Cloud Audio";
                 card.style.opacity = '1';
             }, 200);
         }
@@ -290,8 +388,149 @@
             updateMediaDisplay();
         }
 
-        // Auto-rotate every 8 seconds
         setInterval(nextMedia, 8000);
+
+        // Streaming Authorization Logic
+        function handleCloudStream(url) {
+            if (userState.tier === 'free') {
+                if (userState.freeMinutesRemaining <= 0) {
+                    alert("Your 30-day free streaming limit (1 hour) has been reached. Please upgrade to Pink or Hot Pink tier for unlimited streaming.");
+                    openUserPortal();
+                    return;
+                }
+                // Free tier triggers ad
+                triggerAd(url);
+            } else if (userState.tier === 'pink') {
+                // Pink tier has ads + unlimited
+                triggerAd(url);
+            } else if (userState.tier === 'hotpink') {
+                // Hot pink has no ads + unlimited
+                executeStream(url);
+            }
+        }
+
+        function triggerAd(url) {
+            const adModal = document.getElementById('ad-modal');
+            const skipBtn = document.getElementById('skip-ad-btn');
+            const countdownEl = document.getElementById('ad-countdown');
+            
+            adModal.classList.remove('hidden');
+            skipBtn.disabled = true;
+            skipBtn.className = "px-6 py-2 bg-neutral-800 text-neutral-500 font-bold uppercase text-xs tracking-wider cursor-not-allowed transition";
+            skipBtn.textContent = "Please Wait...";
+            
+            let timeLeft = 5;
+            countdownEl.textContent = timeLeft;
+
+            const timer = setInterval(() => {
+                timeLeft--;
+                countdownEl.textContent = timeLeft;
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    skipBtn.disabled = false;
+                    skipBtn.className = "px-6 py-2 bg-white text-black hover:bg-phAccent hover:text-white font-bold uppercase text-xs tracking-wider cursor-pointer transition";
+                    skipBtn.textContent = "Skip Ad & Stream Now";
+                    skipBtn.onclick = () => {
+                        adModal.classList.add('hidden');
+                        executeStream(url);
+                    };
+                }
+            }, 1000);
+        }
+
+        function executeStream(url) {
+            if (userState.tier === 'free') {
+                userState.freeMinutesRemaining = Math.max(0, userState.freeMinutesRemaining - 1);
+                updateUIState();
+            }
+            alert(`Connecting to cloud storage node...\nStreaming audio file: ${url}`);
+        }
+
+        // AI Teams Hub Access Control
+        function accessAITeams() {
+            if (userState.tier === 'hotpink') {
+                window.location.href = "ai_command.html";
+            } else {
+                document.getElementById('ai-locked-modal').classList.remove('hidden');
+            }
+        }
+
+        function closeAILockedModal() {
+            document.getElementById('ai-locked-modal').classList.add('hidden');
+        }
+
+        // User Portal Controls
+        function openUserPortal() {
+            document.getElementById('user-portal-modal').classList.remove('hidden');
+            updateUIState();
+        }
+
+        function closeUserPortal() {
+            document.getElementById('user-portal-modal').classList.add('hidden');
+            updateUIState();
+        }
+
+        function switchTier(tier) {
+            userState.tier = tier;
+            if (tier === 'free' && userState.freeMinutesRemaining <= 0) {
+                userState.freeMinutesRemaining = 60;
+            }
+            updateUIState();
+        }
+
+        function updateUIState() {
+            // Header badge & status
+            const badge = document.getElementById('header-tier-badge');
+            const currentTierName = document.getElementById('portal-current-tier-name');
+            const timeLeftDisplay = document.getElementById('portal-time-left');
+            const usageDisplay = document.getElementById('portal-usage-display');
+            const aiStatus = document.getElementById('ai-hub-status');
+
+            // Tier Cards styling
+            ['free', 'pink', 'hotpink'].forEach(t => {
+                const card = document.getElementById(`tier-card-${t}`);
+                if (t === userState.tier) {
+                    card.classList.add('border-phAccent');
+                    card.querySelector('button').textContent = "Active";
+                    card.querySelector('button').className = "w-full py-1.5 bg-phAccent text-white text-xs font-bold uppercase tracking-wider";
+                } else {
+                    card.classList.remove('border-phAccent');
+                    if (t === 'free') card.querySelector('button').textContent = "Select Free";
+                    if (t === 'pink') {
+                        card.querySelector('button').textContent = "Select Pink";
+                        card.querySelector('button').className = "w-full py-1.5 bg-white text-black hover:bg-phAccent hover:text-white text-xs font-bold uppercase tracking-wider transition";
+                    }
+                    if (t === 'hotpink') {
+                        card.querySelector('button').textContent = "Select Hot Pink";
+                        card.querySelector('button').className = "w-full py-1.5 bg-phHotPink text-white text-xs font-bold uppercase tracking-wider transition";
+                    }
+                }
+            });
+
+            if (userState.tier === 'free') {
+                badge.textContent = "Free Tier";
+                badge.className = "text-xs uppercase tracking-widest px-2 py-0.5 bg-phBorder text-white font-bold rounded";
+                currentTierName.textContent = "Free Tier";
+                usageDisplay.style.display = 'block';
+                timeLeftDisplay.textContent = `${userState.freeMinutesRemaining}m remaining`;
+                aiStatus.textContent = "Locked";
+                aiStatus.className = "font-mono text-sm text-neutral-400";
+            } else if (userState.tier === 'pink') {
+                badge.textContent = "Pink Tier";
+                badge.className = "text-xs uppercase tracking-widest px-2 py-0.5 bg-phAccent text-white font-bold rounded";
+                currentTierName.textContent = "Pink Tier (Unlimited w/ Ads)";
+                usageDisplay.style.display = 'none';
+                aiStatus.textContent = "Locked";
+                aiStatus.className = "font-mono text-sm text-neutral-400";
+            } else if (userState.tier === 'hotpink') {
+                badge.textContent = "Hot Pink Tier";
+                badge.className = "text-xs uppercase tracking-widest px-2 py-0.5 bg-phHotPink text-white font-bold rounded";
+                currentTierName.textContent = "Hot Pink Tier (Ad-Free + AI Hub)";
+                usageDisplay.style.display = 'none';
+                aiStatus.textContent = "Unlocked";
+                aiStatus.className = "font-mono text-sm text-emerald-400";
+            }
+        }
     </script>
 
 </body>
