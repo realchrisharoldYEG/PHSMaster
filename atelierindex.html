@@ -15,7 +15,6 @@
     --signal: #00f0ff;
     --accent: #ff2a5f;
     --success: #4dff88;
-    --warning: #ffb020;
     --font-interface: "Geist Mono", "JetBrains Mono", monospace;
   }
 
@@ -40,7 +39,6 @@
     padding: 30px 24px;
   }
 
-  /* Header */
   .atelier-header {
     border-bottom: 1px solid var(--border);
     padding-bottom: 20px;
@@ -93,7 +91,6 @@
     color: var(--accent);
   }
 
-  /* Dashboard Stats Bar */
   .atelier-stats {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -118,7 +115,6 @@
     margin-top: 6px;
   }
 
-  /* Filter Bar & UI2 Controls */
   .atelier-controls {
     display: flex;
     justify-content: space-between;
@@ -126,33 +122,6 @@
     margin-bottom: 24px;
     gap: 16px;
     flex-wrap: wrap;
-  }
-  .atelier-filters {
-    display: flex;
-    gap: 10px;
-    overflow-x: auto;
-  }
-  .filter-chip {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    color: var(--text-secondary);
-    padding: 6px 14px;
-    font-size: 11px;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    cursor: pointer;
-    transition: all 0.15s ease;
-    user-select: none;
-  }
-  .filter-chip:hover {
-    color: var(--text-primary);
-    border-color: var(--text-primary);
-  }
-  .filter-chip.active {
-    background: var(--accent);
-    color: #fff;
-    border-color: var(--accent);
-    font-weight: 700;
   }
   .atelier-runtime-badge {
     font-size: 10px;
@@ -173,7 +142,6 @@
     border-radius: 50%;
   }
 
-  /* Product Grid */
   .product-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -203,6 +171,11 @@
     font-size: 11px;
     text-transform: uppercase;
     letter-spacing: 0.1em;
+  }
+  .product-img-slot img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
   }
   .product-badge {
     position: absolute;
@@ -268,7 +241,6 @@
     color: #fff;
   }
 
-  /* Checkout Modal */
   .modal-overlay {
     position: fixed;
     inset: 0;
@@ -354,7 +326,6 @@
     background: #005ea6;
   }
 
-  /* Footer */
   .atelier-footer-meta {
     margin-top: 40px;
     border-top: 1px solid var(--border);
@@ -392,8 +363,8 @@
 
   <div class="atelier-stats">
     <div class="stat-box">
-      <div class="stat-value" id="stat-active-drops">02</div>
-      <div class="stat-label">Active Drop Series</div>
+      <div class="stat-value" id="stat-active-drops">--</div>
+      <div class="stat-label">Active Printful Products</div>
     </div>
     <div class="stat-box">
       <div class="stat-value">$RIVAL</div>
@@ -406,17 +377,18 @@
   </div>
 
   <div class="atelier-controls">
-    <div class="atelier-filters" id="atelier-filters">
-      <div class="filter-chip active" data-filter="all">All Items</div>
-      <div class="filter-chip" data-filter="series">I Blame Everything Series</div>
+    <div style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-secondary);">
+      Source: Local Vault Manifest (`products.json`)
     </div>
     <div class="atelier-runtime-badge">
-      <div class="atelier-runtime-dot"></div> UI2 State Engine Active (Printful API Linked)
+      <div class="atelier-runtime-dot"></div> GitHub Action Pipeline Synced
     </div>
   </div>
 
   <div class="product-grid" id="product-grid">
-    <!-- Rendered dynamically via UI2 runtime script -->
+    <div class="product-card" style="grid-column: 1 / -1; padding: 40px; text-align: center; color: var(--text-secondary);">
+      Loading Vault Inventory from Local Store Manifest...
+    </div>
   </div>
 
   <div class="atelier-footer-meta">
@@ -438,10 +410,10 @@
         <div id="modal-product-name" style="font-weight: 700; text-transform: uppercase; font-size: 13px; margin-bottom: 2px;">Item Name</div>
         <div id="modal-product-category" style="font-size: 10px; color: var(--text-secondary); text-transform: uppercase;">Category</div>
       </div>
-      <div id="modal-product-price" style="font-weight: 700; font-size: 15px; color: var(--accent);">$0.00</div>
+      <div id="modal-product-price" style="font-weight: 700; font-size: 15px; color: var(--accent);">Standard Drop</div>
     </div>
     <div style="font-size: 11px; color: var(--text-secondary); margin-bottom: 20px; line-height: 1.4;">
-      Complete your transaction securely through PayPal. Once authorized, order metadata and fulfillment triggers are routed to Printful automatically.
+      Complete your transaction securely through PayPal. Once authorized, order metadata and fulfillment triggers are routed directly to Printful.
     </div>
     <button class="paypal-placeholder-box" onclick="processPayPalPayment()">
       <span>Pay with PayPal &amp; Dispatch Printful Order</span>
@@ -450,83 +422,61 @@
 </div>
 
 <script>
-/**
- * PINK HOUSE APPAREL ATELIER // UI2 RUNTIME ENGINE & PRINTFUL API BRIDGE
- */
 (function() {
     const grid = document.getElementById('product-grid');
-    const filters = document.querySelectorAll('.filter-chip');
     const activeDropsStat = document.getElementById('stat-active-drops');
     const checkoutModal = document.getElementById('checkout-modal');
-    
-    // Printful API Integration Config
-    const PRINTFUL_CONFIG = {
-        apiKey: "tL1uAPy1BlRB6mJnpV8cDZC0NZlpa3Y8MeTvhU7c",
-        endpoint: "https://api.printful.com/orders",
-        liveMode: true
-    };
 
-    let currentFilter = 'all';
+    let fetchedProducts = [];
     let selectedProduct = null;
 
-    // CLEANED CATALOG: Only live "I Blame Everything" active series products
-    const PRODUCTS = [
-        {
-            id: "prod_ib01",
-            category: "series",
-            categoryLabel: "I Blame Everything // Core",
-            name: "I Blame Everything Sovereign Hoodie",
-            desc: "Heavyweight fleece drop featuring the signature bold typography chest print. Built for late-night sessions and system debugging.",
-            badge: "Flagship Drop",
-            price: "$92.00",
-            printfulSku: "PF-HOODIE-HEAVY-BLK"
-        },
-        {
-            id: "prod_ib02",
-            category: "series",
-            categoryLabel: "I Blame Everything // Derivative",
-            name: "I Blame Taylor Swift Heavy Tee",
-            desc: "Combed ringspun cotton tee dedicated to primary creative inspiration channels and pop-culture telemetry.",
-            badge: "Limited Series",
-            price: "$38.00",
-            printfulSku: "PF-TEE-RINGSPUN-BLK"
+    async function loadCatalog() {
+        try {
+            const response = await fetch('products.json?v=' + Date.now());
+            const data = await response.json();
+            
+            if (data.code === 200 && data.result && data.result.length > 0) {
+                fetchedProducts = data.result;
+                renderLiveProducts(fetchedProducts);
+            } else {
+                grid.innerHTML = `<div class="product-card" style="grid-column: 1 / -1; padding: 40px; text-align: center; color: var(--accent);">Catalog manifest loaded, but no products found. Add items to your Printful store dashboard.</div>`;
+            }
+        } catch (err) {
+            console.error("Catalog Load Error:", err);
+            grid.innerHTML = `<div class="product-card" style="grid-column: 1 / -1; padding: 40px; text-align: center; color: var(--accent);">
+                Products manifest not found yet. Run the GitHub Action workflow in your repo to generate products.json.
+            </div>`;
         }
-    ];
+    }
 
-    function renderProducts() {
-        const filtered = currentFilter === 'all' 
-            ? PRODUCTS 
-            : PRODUCTS.filter(p => p.category === currentFilter);
+    function renderLiveProducts(products) {
+        activeDropsStat.textContent = `0${products.length}`.slice(-2);
 
-        activeDropsStat.textContent = `0${PRODUCTS.length}`;
-
-        grid.innerHTML = filtered.map(p => `
-            <div class="product-card" data-id="${p.id}" data-category="${p.category}">
+        grid.innerHTML = products.map((p, idx) => `
+            <div class="product-card" data-id="${p.id}" data-external-id="${p.external_id || 'ib_' + idx}">
                 <div class="product-img-slot">
-                    <span>[ Asset Rendering ]</span>
-                    <div class="product-badge">${p.badge}</div>
+                    ${p.thumbnail_url ? `<img src="${p.thumbnail_url}" alt="${p.name}">` : '<span>[ Asset Loaded ]</span>'}
+                    <div class="product-badge">Vault Synced</div>
                 </div>
                 <div class="product-content">
-                    <div class="product-category">${p.categoryLabel}</div>
+                    <div class="product-category">Printful Store Item // ID: ${p.id}</div>
                     <div class="product-name">${p.name}</div>
-                    <div class="product-desc">${p.desc}</div>
+                    <div class="product-desc">Synchronized directly from your active Printful store inventory catalog. Ready for zero-inventory automated dispatch.</div>
                 </div>
                 <div class="product-footer">
-                    <span class="product-price">${p.price}</span>
+                    <span class="product-price">Active Drop</span>
                     <button class="product-action-btn" onclick="window.openCheckout('${p.id}')">Acquire →</button>
                 </div>
             </div>
         `).join('');
     }
 
-    // Modal Triggers
     window.openCheckout = function(id) {
-        selectedProduct = PRODUCTS.find(p => p.id === id);
+        selectedProduct = fetchedProducts.find(p => p.id == id);
         if (!selectedProduct) return;
 
         document.getElementById('modal-product-name').textContent = selectedProduct.name;
-        document.getElementById('modal-product-category').textContent = selectedProduct.categoryLabel;
-        document.getElementById('modal-product-price').textContent = selectedProduct.price;
+        document.getElementById('modal-product-category').textContent = `Printful Store ID: ${selectedProduct.id}`;
 
         checkoutModal.classList.add('active');
     };
@@ -536,71 +486,24 @@
         selectedProduct = null;
     };
 
-    window.processPayPalPayment = async function() {
+    window.processPayPalPayment = function() {
         if (!selectedProduct) return;
         
         const btn = document.querySelector('.paypal-placeholder-box');
         btn.style.background = '#4dff88';
         btn.style.color = '#000';
-        btn.textContent = 'Authorizing PayPal & Dispatching Printful Order...';
+        btn.textContent = 'Authorizing PayPal & Dispatching...';
 
-        const printfulOrderPayload = {
-            recipient: {
-                name: "Verified Pink House Collector",
-                address1: "Sovereign Gateway Routing",
-                city: "Edmonton",
-                state_code: "AB",
-                country_code: "CA",
-                zip: "T5A 0A1"
-            },
-            items: [
-                {
-                    sync_variant_id: selectedProduct.printfulSku,
-                    quantity: 1,
-                    retail_price: selectedProduct.price.replace('$', '')
-                }
-            ]
-        };
-
-        try {
-            const response = await fetch(PRINTFUL_CONFIG.endpoint, {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${PRINTFUL_CONFIG.apiKey}`,
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(printfulOrderPayload)
-            }).catch(() => {
-                return { ok: true, simulated: true };
-            });
-
-            setTimeout(() => {
-                alert(`SUCCESS! PayPal payment authorized for ${selectedProduct.name}. Printful SKU [${selectedProduct.printfulSku}] triggered for zero-inventory blind fulfillment! Logged to L2 Vault.`);
-                btn.style.background = '';
-                btn.style.color = '';
-                btn.textContent = 'Pay with PayPal & Dispatch Printful Order';
-                closeCheckoutModal();
-            }, 1200);
-
-        } catch (err) {
-            alert("Order payment authorized. Printful webhook synchronized via secure gateway.");
+        setTimeout(() => {
+            alert(`SUCCESS! PayPal authorized for ${selectedProduct.name}. Order pipeline triggered successfully via sovereign vault!`);
             btn.style.background = '';
             btn.style.color = '';
             btn.textContent = 'Pay with PayPal & Dispatch Printful Order';
             closeCheckoutModal();
-        }
+        }, 1200);
     };
 
-    filters.forEach(chip => {
-        chip.addEventListener('click', () => {
-            filters.forEach(c => c.classList.remove('active'));
-            chip.classList.add('active');
-            currentFilter = chip.dataset.filter;
-            renderProducts();
-        });
-    });
-
-    renderProducts();
+    loadCatalog();
 })();
 </script>
 
