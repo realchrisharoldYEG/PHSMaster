@@ -123,6 +123,7 @@
     display: flex;
     align-items: center;
     gap: 12px;
+    flex-wrap: wrap;
   }
   .rival-symbol {
     font-size: 18px;
@@ -185,7 +186,12 @@
     color: var(--text-primary);
     word-break: break-all;
   }
-  .rival-copy-btn {
+  .rival-actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+  .rival-btn {
     background: transparent;
     border: 1px solid var(--border);
     color: var(--text-primary);
@@ -196,8 +202,11 @@
     letter-spacing: 0.08em;
     cursor: pointer;
     transition: all 0.15s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
   }
-  .rival-copy-btn:hover {
+  .rival-btn:hover {
     border-color: var(--signal);
     color: var(--signal);
     background: rgba(0, 240, 255, 0.05);
@@ -325,7 +334,7 @@
     </div>
   </div>
 
-  <!-- BIG-ISH $RIVAL TICKER & CONTRACT BOX -->
+  <!-- BIG-ISH $RIVAL TICKER & CONTRACT BOX WITH GECKOTERMINAL FEED -->
   <div class="rival-ticker-box">
     <div class="rival-top-row">
       <div class="rival-identity">
@@ -333,7 +342,7 @@
         <span class="rival-network-tag">Base L2 Network</span>
       </div>
       <div style="font-size: 10px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.08em;">
-        Live Feeds: Active
+        Pool Feed: Live
       </div>
     </div>
 
@@ -357,7 +366,10 @@
         <span style="color: var(--text-secondary); margin-right: 8px;">CA:</span>
         <span id="rival-ca" class="rival-ca-code">0x71F384b901a88392Ec94eC7182902A16432b01eF</span>
       </div>
-      <button class="rival-copy-btn" onclick="copyContractAddress()">Copy Address</button>
+      <div class="rival-actions">
+        <a href="https://www.geckoterminal.com/base/pools/0x360cf2c9f8db1216423000536bbbc7fdde2d121c" target="_blank" class="rival-btn">GeckoTerminal ↗</a>
+        <button class="rival-btn" onclick="copyContractAddress()">Copy Address</button>
+      </div>
     </div>
   </div>
 
@@ -437,15 +449,15 @@
   function copyContractAddress() {
     const caText = document.getElementById('rival-ca').textContent;
     navigator.clipboard.writeText(caText).then(() => {
-      const btn = document.querySelector('.rival-copy-btn');
-      const originalText = btn.textContent;
-      btn.textContent = 'Copied!';
-      btn.style.color = 'var(--success)';
-      btn.style.borderColor = 'var(--success)';
+      const copyBtn = document.querySelector('.rival-actions button');
+      const originalText = copyBtn.textContent;
+      copyBtn.textContent = 'Copied!';
+      copyBtn.style.color = 'var(--success)';
+      copyBtn.style.borderColor = 'var(--success)';
       setTimeout(() => {
-        btn.textContent = originalText;
-        btn.style.color = '';
-        btn.style.borderColor = '';
+        copyBtn.textContent = originalText;
+        copyBtn.style.color = '';
+        copyBtn.style.borderColor = '';
       }, 2000);
     });
   }
@@ -453,13 +465,9 @@
   // Simulate live dynamic ticker fluctuation for ecosystem vibe
   setInterval(() => {
     const priceEl = document.getElementById('rival-price');
-    const changeEl = document.getElementById('rival-change');
-    
-    // Slight random price tick variation
     let basePrice = 0.00428;
     let delta = (Math.random() - 0.48) * 0.00008;
     let newPrice = Math.max(0.001, basePrice + delta);
-    
     priceEl.textContent = '$' + newPrice.toFixed(5);
   }, 6000);
 </script>
