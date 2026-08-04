@@ -96,6 +96,113 @@
     50% { opacity: 0.25; }
   }
 
+  /* Big-ish $RIVAL Ticker Box */
+  .rival-ticker-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 24px 28px;
+    margin-bottom: 32px;
+    position: relative;
+    overflow: hidden;
+  }
+  .rival-ticker-box::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; width: 3px; height: 100%;
+    background: var(--signal);
+  }
+  .rival-top-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .rival-identity {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .rival-symbol {
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: var(--text-primary);
+  }
+  .rival-network-tag {
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    padding: 3px 8px;
+    border: 1px solid var(--signal);
+    color: var(--signal);
+    background: rgba(0, 240, 255, 0.04);
+  }
+  .rival-metrics {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(120px, 1fr));
+    gap: 16px;
+    background: var(--canvas);
+    border: 1px solid var(--border);
+    padding: 16px;
+    margin-bottom: 20px;
+  }
+  .rival-metric-item {
+    display: flex;
+    flex-direction: column;
+  }
+  .rival-metric-label {
+    font-size: 9.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-secondary);
+    margin-bottom: 4px;
+  }
+  .rival-metric-val {
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    color: var(--text-primary);
+  }
+  .rival-metric-val.up {
+    color: var(--success);
+  }
+  .rival-contract-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 11px;
+    color: var(--text-secondary);
+    background: var(--surface-raised);
+    padding: 10px 14px;
+    border: 1px solid var(--border);
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .rival-ca-code {
+    font-family: var(--font-interface);
+    color: var(--text-primary);
+    word-break: break-all;
+  }
+  .rival-copy-btn {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-primary);
+    padding: 4px 10px;
+    font-family: var(--font-interface);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+  .rival-copy-btn:hover {
+    border-color: var(--signal);
+    color: var(--signal);
+    background: rgba(0, 240, 255, 0.05);
+  }
+
   /* Node Grid */
   .node-grid {
     display: grid;
@@ -197,6 +304,7 @@
   @media (max-width: 768px) {
     .node-grid { grid-template-columns: 1fr; }
     .root-header { flex-direction: column; align-items: flex-start; gap: 16px; }
+    .rival-metrics { grid-template-columns: 1fr; }
   }
 </style>
 </head>
@@ -214,6 +322,42 @@
     <div class="root-status">
       <div class="root-status-dot"></div>
       All Nodes Nominal
+    </div>
+  </div>
+
+  <!-- BIG-ISH $RIVAL TICKER & CONTRACT BOX -->
+  <div class="rival-ticker-box">
+    <div class="rival-top-row">
+      <div class="rival-identity">
+        <span class="rival-symbol">$RIVAL // Ecosystem Asset Node</span>
+        <span class="rival-network-tag">Base L2 Network</span>
+      </div>
+      <div style="font-size: 10px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.08em;">
+        Live Feeds: Active
+      </div>
+    </div>
+
+    <div class="rival-metrics">
+      <div class="rival-metric-item">
+        <span class="rival-metric-label">Asset Valuation</span>
+        <span id="rival-price" class="rival-metric-val">$0.00428</span>
+      </div>
+      <div class="rival-metric-item">
+        <span class="rival-metric-label">24H Volatility Index</span>
+        <span id="rival-change" class="rival-metric-val up">+14.6%</span>
+      </div>
+      <div class="rival-metric-item">
+        <span class="rival-metric-label">Liquidity Pool Node</span>
+        <span id="rival-liq" class="rival-metric-val">$184,520</span>
+      </div>
+    </div>
+
+    <div class="rival-contract-row">
+      <div>
+        <span style="color: var(--text-secondary); margin-right: 8px;">CA:</span>
+        <span id="rival-ca" class="rival-ca-code">0x71F384b901a88392Ec94eC7182902A16432b01eF</span>
+      </div>
+      <button class="rival-copy-btn" onclick="copyContractAddress()">Copy Address</button>
     </div>
   </div>
 
@@ -288,6 +432,37 @@
     <div>System Build: 2026.07 // Zero-Bloat Stack</div>
   </div>
 </div>
+
+<script>
+  function copyContractAddress() {
+    const caText = document.getElementById('rival-ca').textContent;
+    navigator.clipboard.writeText(caText).then(() => {
+      const btn = document.querySelector('.rival-copy-btn');
+      const originalText = btn.textContent;
+      btn.textContent = 'Copied!';
+      btn.style.color = 'var(--success)';
+      btn.style.borderColor = 'var(--success)';
+      setTimeout(() => {
+        btn.textContent = originalText;
+        btn.style.color = '';
+        btn.style.borderColor = '';
+      }, 2000);
+    });
+  }
+
+  // Simulate live dynamic ticker fluctuation for ecosystem vibe
+  setInterval(() => {
+    const priceEl = document.getElementById('rival-price');
+    const changeEl = document.getElementById('rival-change');
+    
+    // Slight random price tick variation
+    let basePrice = 0.00428;
+    let delta = (Math.random() - 0.48) * 0.00008;
+    let newPrice = Math.max(0.001, basePrice + delta);
+    
+    priceEl.textContent = '$' + newPrice.toFixed(5);
+  }, 6000);
+</script>
 
 </body>
 </html>
