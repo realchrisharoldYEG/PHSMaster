@@ -81,8 +81,8 @@
                             <span class="text-[10px] uppercase tracking-widest text-phAccent">Audio Original Series</span>
                             <p class="text-sm font-semibold mt-1">Pilot Episode: Pay the Mortgage</p>
                         </div>
-                        <a href="openriverindex.html" class="mt-4 block text-center w-full py-2 bg-white text-black font-bold uppercase text-xs hover:bg-phAccent hover:text-white transition">
-                            Stream Now
+                        <a href="/cloud/audio/sunshine-club-pilot.mp3" class="mt-4 block text-center w-full py-2 bg-white text-black font-bold uppercase text-xs hover:bg-phAccent hover:text-white transition">
+                            Stream Cloud Audio
                         </a>
                     </div>
                 </div>
@@ -98,8 +98,8 @@
                             <span class="text-[10px] uppercase tracking-widest text-phAccent">Studio Album</span>
                             <p class="text-sm font-semibold mt-1">Live-Recorded Multi-Track Master</p>
                         </div>
-                        <a href="atelierindex.html" class="mt-4 block text-center w-full py-2 bg-white text-black font-bold uppercase text-xs hover:bg-phAccent hover:text-white transition">
-                            Stream Now
+                        <a href="/cloud/audio/sincerely-yours-master.mp3" class="mt-4 block text-center w-full py-2 bg-white text-black font-bold uppercase text-xs hover:bg-phAccent hover:text-white transition">
+                            Stream Cloud Audio
                         </a>
                     </div>
                 </div>
@@ -115,8 +115,8 @@
                             <span class="text-[10px] uppercase tracking-widest text-phAccent">Immersive Doc</span>
                             <p class="text-sm font-semibold mt-1">The Largest Love Story</p>
                         </div>
-                        <a href="openriverindex.html" class="mt-4 block text-center w-full py-2 bg-white text-black font-bold uppercase text-xs hover:bg-phAccent hover:text-white transition">
-                            Stream Now
+                        <a href="/cloud/audio/red-documentary.mp3" class="mt-4 block text-center w-full py-2 bg-white text-black font-bold uppercase text-xs hover:bg-phAccent hover:text-white transition">
+                            Stream Cloud Audio
                         </a>
                     </div>
                 </div>
@@ -132,9 +132,35 @@
                             <span class="text-[10px] uppercase tracking-widest text-phAccent">Pixar-Style Concept</span>
                             <p class="text-sm font-semibold mt-1">Golden Compass Narrative</p>
                         </div>
-                        <a href="atelierindex.html" class="mt-4 block text-center w-full py-2 bg-white text-black font-bold uppercase text-xs hover:bg-phAccent hover:text-white transition">
-                            Explore
+                        <a href="/cloud/audio/allowance-concept.mp3" class="mt-4 block text-center w-full py-2 bg-white text-black font-bold uppercase text-xs hover:bg-phAccent hover:text-white transition">
+                            Stream Cloud Audio
                         </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION 1.5: DYNAMIC ROTATING MEDIA OUTPOST (CLOUD-DIRECTED) -->
+        <div>
+            <div class="flex justify-between items-end mb-6 border-b border-phBorder pb-2">
+                <h2 class="text-xl font-bold uppercase tracking-wider">Ecosystem Spotlight & Rotating Media</h2>
+                <span class="text-xs uppercase tracking-widest text-phAccent">Cloud Storage Node</span>
+            </div>
+            
+            <div class="bg-phCard border border-phBorder p-8 rounded-none relative overflow-hidden shadow-2xl">
+                <div class="absolute inset-0 bg-gradient-to-r from-phAccent/5 to-transparent pointer-events-none"></div>
+                <div id="media-card" class="relative z-10 max-w-2xl transition-opacity duration-300">
+                    <span id="media-badge" class="text-[10px] font-mono uppercase tracking-widest px-2 py-1 bg-phBorder text-phAccent rounded inline-block mb-3">Audio Drama Pilot</span>
+                    <h3 id="media-title" class="text-2xl md:text-3xl font-black tracking-tight mb-2">The Sunshine Club</h3>
+                    <p id="media-description" class="text-neutral-400 text-sm md:text-base mb-6">Pay the Mortgage — Direct master streaming live from cloud storage repository.</p>
+                    <div class="flex items-center space-x-4">
+                        <a id="media-link" href="/cloud/audio/sunshine-club-pilot.mp3" class="px-6 py-3 bg-white text-black font-bold uppercase text-xs tracking-wider hover:bg-phAccent hover:text-white transition inline-block">
+                            Stream Cloud Audio
+                        </a>
+                        <div class="flex space-x-2">
+                            <button onclick="prevMedia()" class="w-10 h-10 border border-phBorder flex items-center justify-center hover:bg-phBorder transition text-neutral-300">&larr;</button>
+                            <button onclick="nextMedia()" class="w-10 h-10 border border-phBorder flex items-center justify-center hover:bg-phBorder transition text-neutral-300">&rarr;</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -147,7 +173,7 @@
                 <a href="openriverindex.html" class="text-xs uppercase tracking-widest text-phAccent hover:underline">Launch Bridge &rarr;</a>
             </div>
             
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
                 <div class="bg-phCard border border-phBorder p-6 flex flex-col justify-between">
                     <div>
                         <div class="text-xs font-mono text-neutral-500 mb-2">BASE NETWORK TOKEN</div>
@@ -183,6 +209,19 @@
                         <a href="ai_command.html" class="px-4 py-1.5 bg-neutral-800 hover:bg-white hover:text-black font-bold uppercase text-xs transition inline-block text-center">Access Console</a>
                     </div>
                 </div>
+
+                <!-- Atelier Outpost Marketplace Card -->
+                <div class="bg-phCard border border-phBorder p-6 flex flex-col justify-between group hover:border-white transition">
+                    <div>
+                        <div class="text-xs font-mono text-neutral-500 mb-2">CREATIVE OUTPOST</div>
+                        <h3 class="text-lg font-bold mb-1">The Atelier</h3>
+                        <p class="text-sm text-neutral-400">Direct portal to studio archives, full releases, unreleased notes, and creative brand headquarters.</p>
+                    </div>
+                    <div class="mt-6 pt-4 border-t border-phBorder flex justify-between items-center">
+                        <span class="font-mono text-sm text-phAccent">Unlocked</span>
+                        <a href="atelierindex.html" class="px-4 py-1.5 bg-white text-black hover:bg-phAccent hover:text-white font-bold uppercase text-xs transition inline-block text-center">Enter Hub</a>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -192,6 +231,68 @@
     <footer class="border-t border-phBorder py-8 text-center text-xs text-neutral-500 tracking-wider">
         PINK HOUSE ONE // RED ROCK & PINK HOUSE SISTERHOOD FAMILY &copy; 2026. ALL RIGHTS RESERVED.
     </footer>
+
+    <!-- ROTATING MEDIA CONTROLLER SCRIPT (CLOUD-DIRECTED) -->
+    <script>
+        const mediaItems = [
+            {
+                badge: "Audio Drama Pilot",
+                title: "The Sunshine Club",
+                description: "Pay the Mortgage — Direct master streaming live from cloud storage repository.",
+                link: "/cloud/audio/sunshine-club-pilot.mp3",
+                ctaText: "Stream Cloud Audio"
+            },
+            {
+                badge: "Immersive Documentary",
+                title: "Red: The Largest Love Story",
+                description: "Multi-track audio original narrative project hosted directly in the cloud.",
+                link: "/cloud/audio/red-documentary.mp3",
+                ctaText: "Stream Cloud Audio"
+            },
+            {
+                badge: "Studio Release",
+                title: "Major League",
+                description: "Rap master audio track delivered directly from local infrastructure storage.",
+                link: "/cloud/audio/major-league-master.mp3",
+                ctaText: "Stream Cloud Audio"
+            }
+        ];
+
+        let currentIndex = 0;
+
+        function updateMediaDisplay() {
+            const card = document.getElementById('media-card');
+            const badge = document.getElementById('media-badge');
+            const title = document.getElementById('media-title');
+            const description = document.getElementById('media-description');
+            const link = document.getElementById('media-link');
+
+            card.style.opacity = '0';
+            
+            setTimeout(() => {
+                const item = mediaItems[currentIndex];
+                badge.textContent = item.badge;
+                title.textContent = item.title;
+                description.textContent = item.description;
+                link.href = item.link;
+                link.textContent = item.ctaText;
+                card.style.opacity = '1';
+            }, 200);
+        }
+
+        function nextMedia() {
+            currentIndex = (currentIndex + 1) % mediaItems.length;
+            updateMediaDisplay();
+        }
+
+        function prevMedia() {
+            currentIndex = (currentIndex - 1 + mediaItems.length) % mediaItems.length;
+            updateMediaDisplay();
+        }
+
+        // Auto-rotate every 8 seconds
+        setInterval(nextMedia, 8000);
+    </script>
 
 </body>
 </html>
