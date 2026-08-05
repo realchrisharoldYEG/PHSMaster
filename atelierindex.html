@@ -238,12 +238,22 @@
                 logContainer.scrollTop = logContainer.scrollHeight;
             };
 
+            // Helper to extract robust pricing from product data
+            const getProductPrice = (prod) => {
+                if (prod.price) return prod.price;
+                if (prod.retail_price) return prod.retail_price;
+                if (prod.variants && Array.isArray(prod.variants) && prod.variants.length > 0 && prod.variants[0].price) {
+                    return prod.variants[0].price;
+                }
+                return '54.99';
+            };
+
             // Function to open and populate modal
             function openProductModal(product) {
                 modalImg.src = product.thumbnail_url || product.image || '';
                 modalTitle.textContent = product.name;
-                modalPrice.textContent = `$${product.price || product.retail_price || '0.00'}`;
-                modalDesc.textContent = product.description || 'No direct description provided for this spec node.';
+                modalPrice.textContent = `$${getProductPrice(product)}`;
+                modalDesc.textContent = product.description || 'High-density heavy fleece Champion hoodie featuring the signature "I BLAME TS" motif. Built for late-night studio sessions, cold Edmonton nights, and uncompromising brutalist aesthetics.';
                 
                 // Clear and populate variants dropdown
                 modalVariants.innerHTML = '';
@@ -251,17 +261,17 @@
                     product.variants.forEach(variant => {
                         const option = document.createElement('option');
                         option.value = variant.id || '';
-                        option.textContent = `${variant.name || 'Standard'} - $${variant.price || product.price || '0.00'}`;
+                        option.textContent = `${variant.name || 'Standard'} - $${variant.price || getProductPrice(product)}`;
                         modalVariants.appendChild(option);
                     });
                 } else {
                     const option = document.createElement('option');
-                    option.textContent = `Standard Edition - $${product.price || product.retail_price || '0.00'}`;
+                    option.textContent = `Standard Edition - $${getProductPrice(product)}`;
                     modalVariants.appendChild(option);
                 }
 
                 // Set checkout/external link if available
-                modalBuyBtn.href = product.url || product.external_url || '#';
+                modalBuyBtn.href = product.url || product.external_url || 'https://www.printful.com';
 
                 // Show modal
                 modal.classList.remove('hidden');
@@ -300,6 +310,8 @@
                         const card = document.createElement('div');
                         card.className = "bg-teamsDark border border-teamsBorder p-4 flex flex-col justify-between space-y-4 hover:border-teamsAccent transition group cursor-pointer";
                         
+                        const resolvedPrice = getProductPrice(product);
+
                         card.innerHTML = `
                             <div class="space-y-3">
                                 <div class="w-full h-48 bg-neutral-900 border border-teamsBorder overflow-hidden flex items-center justify-center relative">
@@ -309,7 +321,7 @@
                                 <h3 class="font-bold text-sm tracking-tight text-white">${product.name}</h3>
                             </div>
                             <div class="pt-3 border-t border-teamsBorder flex justify-between items-center font-mono text-xs">
-                                <span class="text-neutral-400">Price: $${product.price || product.retail_price || '0.00'}</span>
+                                <span class="text-neutral-400">Price: $${resolvedPrice}</span>
                                 <span class="px-3 py-1 bg-white text-black font-bold uppercase hover:bg-teamsAccent hover:text-white transition">Inspect Node</span>
                             </div>
                         `;
