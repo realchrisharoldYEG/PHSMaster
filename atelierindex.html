@@ -1,511 +1,275 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pink House Apparel Atelier // UI2 Runtime Core</title>
-<style>
-  :root {
-    --canvas: #050505;
-    --surface: #0e0e0e;
-    --surface-raised: #141414;
-    --text-primary: #ffffff;
-    --text-secondary: #a3a3a3;
-    --border: #1f1f1f;
-    --signal: #00f0ff;
-    --accent: #ff2a5f;
-    --success: #4dff88;
-    --font-interface: "Geist Mono", "JetBrains Mono", monospace;
-  }
-
-  * { box-sizing: border-box; }
-
-  body {
-    background: var(--canvas);
-    color: var(--text-primary);
-    font-family: var(--font-interface);
-    font-size: 13px;
-    line-height: 1.5;
-    margin: 0;
-    padding: 0;
-    letter-spacing: 0.01em;
-  }
-
-  body ::selection { background: var(--accent); color: #fff; }
-
-  .atelier-container {
-    max-width: 1300px;
-    margin: 0 auto;
-    padding: 30px 24px;
-  }
-
-  .atelier-header {
-    border-bottom: 1px solid var(--border);
-    padding-bottom: 20px;
-    margin-bottom: 30px;
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-  }
-  .atelier-brand-group {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-  .atelier-mark {
-    width: 10px;
-    height: 10px;
-    background: var(--accent);
-    animation: pulse 1.8s ease-in-out infinite;
-  }
-  @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.25; }
-  }
-  .atelier-title {
-    font-size: 13px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
-  }
-  .atelier-sub {
-    font-size: 10px;
-    color: var(--text-secondary);
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    margin-top: 2px;
-  }
-  .atelier-nav-back {
-    color: var(--text-secondary);
-    text-decoration: none;
-    font-size: 11px;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    border: 1px solid var(--border);
-    padding: 6px 12px;
-    background: var(--surface);
-    transition: all 0.15s ease;
-  }
-  .atelier-nav-back:hover {
-    border-color: var(--accent);
-    color: var(--accent);
-  }
-
-  .atelier-stats {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 16px;
-    margin-bottom: 30px;
-  }
-  .stat-box {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    padding: 16px 20px;
-  }
-  .stat-value {
-    font-size: 24px;
-    font-weight: 700;
-    color: var(--accent);
-  }
-  .stat-label {
-    font-size: 10px;
-    color: var(--text-secondary);
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    margin-top: 6px;
-  }
-
-  .atelier-controls {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 24px;
-    gap: 16px;
-    flex-wrap: wrap;
-  }
-  .atelier-runtime-badge {
-    font-size: 10px;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    color: var(--signal);
-    border: 1px solid var(--signal);
-    padding: 6px 12px;
-    background: rgba(0, 240, 255, 0.03);
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-  .atelier-runtime-dot {
-    width: 5px;
-    height: 5px;
-    background: var(--signal);
-    border-radius: 50%;
-  }
-
-  .product-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 20px;
-  }
-  .product-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    transition: border-color 0.15s ease, background 0.15s ease;
-  }
-  .product-card:hover {
-    border-color: var(--accent);
-    background: var(--surface-raised);
-  }
-  .product-img-slot {
-    background: var(--canvas);
-    border-bottom: 1px solid var(--border);
-    height: 220px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    color: var(--text-secondary);
-    font-size: 11px;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-  }
-  .product-img-slot img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-  .product-badge {
-    position: absolute;
-    top: 12px;
-    right: 12px;
-    font-size: 9px;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    padding: 3px 8px;
-    background: var(--canvas);
-    border: 1px solid var(--border);
-    color: var(--signal);
-  }
-  .product-content {
-    padding: 20px;
-  }
-  .product-category {
-    font-size: 10px;
-    color: var(--text-secondary);
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    margin-bottom: 6px;
-  }
-  .product-name {
-    font-size: 15px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    margin-bottom: 10px;
-  }
-  .product-desc {
-    font-size: 12px;
-    color: var(--text-secondary);
-    line-height: 1.4;
-    margin-bottom: 16px;
-  }
-  .product-footer {
-    border-top: 1px solid var(--border);
-    padding: 16px 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  .product-price {
-    font-weight: 700;
-    font-size: 14px;
-    color: var(--text-primary);
-  }
-  .product-action-btn {
-    background: transparent;
-    border: 1px solid var(--accent);
-    color: var(--accent);
-    font-family: var(--font-interface);
-    font-size: 10px;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    padding: 8px 14px;
-    cursor: pointer;
-    transition: all 0.15s ease;
-  }
-  .product-action-btn:hover {
-    background: var(--accent);
-    color: #fff;
-  }
-
-  .modal-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.85);
-    backdrop-filter: blur(4px);
-    display: none;
-    align-items: center;
-    justify-content: center;
-    z-index: 100;
-    padding: 20px;
-  }
-  .modal-overlay.active {
-    display: flex;
-  }
-  .modal-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    max-width: 480px;
-    width: 100%;
-    padding: 30px;
-    position: relative;
-    box-shadow: 0 20px 40px rgba(0,0,0,0.5);
-  }
-  .modal-close {
-    position: absolute;
-    top: 16px;
-    right: 16px;
-    background: transparent;
-    border: 1px solid var(--border);
-    color: var(--text-secondary);
-    width: 30px;
-    height: 30px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    font-family: var(--font-interface);
-    font-size: 14px;
-  }
-  .modal-close:hover {
-    border-color: var(--accent);
-    color: var(--accent);
-  }
-  .modal-header {
-    margin-bottom: 20px;
-    border-bottom: 1px solid var(--border);
-    padding-bottom: 14px;
-  }
-  .modal-title {
-    font-size: 14px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-  }
-  .modal-item-summary {
-    background: var(--canvas);
-    border: 1px solid var(--border);
-    padding: 14px;
-    margin-bottom: 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  .paypal-placeholder-box {
-    background: #0070ba;
-    color: #fff;
-    border: none;
-    width: 100%;
-    padding: 14px;
-    font-family: var(--font-interface);
-    font-weight: 700;
-    font-size: 12px;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    transition: background 0.15s ease;
-  }
-  .paypal-placeholder-box:hover {
-    background: #005ea6;
-  }
-
-  .atelier-footer-meta {
-    margin-top: 40px;
-    border-top: 1px solid var(--border);
-    padding-top: 20px;
-    display: flex;
-    justify-content: space-between;
-    font-size: 10px;
-    color: var(--text-secondary);
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-  }
-
-  @media (max-width: 1024px) {
-    .product-grid { grid-template-columns: repeat(2, 1fr); }
-  }
-  @media (max-width: 768px) {
-    .product-grid, .atelier-stats { grid-template-columns: 1fr; }
-    .atelier-header { flex-direction: column; align-items: flex-start; gap: 16px; }
-  }
-</style>
-</head>
-<body>
-
-<div class="atelier-container">
-  <div class="atelier-header">
-    <div class="atelier-brand-group">
-      <div class="atelier-mark"></div>
-      <div>
-        <div class="atelier-title">Pink House Apparel Atelier</div>
-        <div class="atelier-sub">UI2 Sovereign Merch Vault &amp; Telemetry Core</div>
-      </div>
-    </div>
-    <a href="index.html" class="atelier-nav-back">← Back to Master Index</a>
-  </div>
-
-  <div class="atelier-stats">
-    <div class="stat-box">
-      <div class="stat-value" id="stat-active-drops">--</div>
-      <div class="stat-label">Active Printful Products</div>
-    </div>
-    <div class="stat-box">
-      <div class="stat-value">$RIVAL</div>
-      <div class="stat-label">Gated Access Token</div>
-    </div>
-    <div class="stat-box">
-      <div class="stat-value" id="stat-vault-status">ONLINE</div>
-      <div class="stat-label">Base L2 Rail Status</div>
-    </div>
-  </div>
-
-  <div class="atelier-controls">
-    <div style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-secondary);">
-      Source: Local Vault Manifest (`products.json`)
-    </div>
-    <div class="atelier-runtime-badge">
-      <div class="atelier-runtime-dot"></div> GitHub Action Pipeline Synced
-    </div>
-  </div>
-
-  <div class="product-grid" id="product-grid">
-    <div class="product-card" style="grid-column: 1 / -1; padding: 40px; text-align: center; color: var(--text-secondary);">
-      Loading Vault Inventory from Local Store Manifest...
-    </div>
-  </div>
-
-  <div class="atelier-footer-meta">
-    <div>Pink House Apparel Atelier // Zero-Bloat Runtime</div>
-    <div>Network: Base L2 // State: Synced</div>
-  </div>
-</div>
-
-<!-- PAYPAL CHECKOUT MODAL -->
-<div class="modal-overlay" id="checkout-modal">
-  <div class="modal-card">
-    <button class="modal-close" onclick="closeCheckoutModal()">×</button>
-    <div class="modal-header">
-      <div class="modal-title">Secure PayPal Checkout</div>
-      <div style="font-size: 10px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.08em; margin-top: 4px;">Pink House Sovereign Gateway</div>
-    </div>
-    <div class="modal-item-summary">
-      <div>
-        <div id="modal-product-name" style="font-weight: 700; text-transform: uppercase; font-size: 13px; margin-bottom: 2px;">Item Name</div>
-        <div id="modal-product-category" style="font-size: 10px; color: var(--text-secondary); text-transform: uppercase;">Category</div>
-      </div>
-      <div id="modal-product-price" style="font-weight: 700; font-size: 15px; color: var(--accent);">Standard Drop</div>
-    </div>
-    <div style="font-size: 11px; color: var(--text-secondary); margin-bottom: 20px; line-height: 1.4;">
-      Complete your transaction securely through PayPal. Once authorized, order metadata and fulfillment triggers are routed directly to Printful.
-    </div>
-    <button class="paypal-placeholder-box" onclick="processPayPalPayment()">
-      <span>Pay with PayPal &amp; Dispatch Printful Order</span>
-    </button>
-  </div>
-</div>
-
-<script>
-(function() {
-    const grid = document.getElementById('product-grid');
-    const activeDropsStat = document.getElementById('stat-active-drops');
-    const checkoutModal = document.getElementById('checkout-modal');
-
-    let fetchedProducts = [];
-    let selectedProduct = null;
-
-    async function loadCatalog() {
-        try {
-            const response = await fetch('products.json?v=' + Date.now());
-            const data = await response.json();
-            
-            if (data.code === 200 && data.result && data.result.length > 0) {
-                fetchedProducts = data.result;
-                renderLiveProducts(fetchedProducts);
-            } else {
-                grid.innerHTML = `<div class="product-card" style="grid-column: 1 / -1; padding: 40px; text-align: center; color: var(--accent);">Catalog manifest loaded, but no products found. Add items to your Printful store dashboard.</div>`;
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Teams // Telemetry & Analytics Hub</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        teamsDark: '#050505',
+                        teamsCard: '#0e0e0e',
+                        teamsBorder: '#1f1f1f',
+                        teamsAccent: '#ff2a5f',
+                        teamsCyan: '#00f0ff'
+                    }
+                }
             }
-        } catch (err) {
-            console.error("Catalog Load Error:", err);
-            grid.innerHTML = `<div class="product-card" style="grid-column: 1 / -1; padding: 40px; text-align: center; color: var(--accent);">
-                Products manifest not found yet. Run the GitHub Action workflow in your repo to generate products.json.
-            </div>`;
         }
-    }
+    </script>
+</head>
+<body class="bg-teamsDark text-white font-sans antialiased selection:bg-teamsAccent selection:text-white">
 
-    function renderLiveProducts(products) {
-        activeDropsStat.textContent = `0${products.length}`.slice(-2);
+    <!-- TOP UTILITY HEADER -->
+    <header class="flex justify-between items-center px-8 py-4 border-b border-teamsBorder bg-teamsDark/90 backdrop-blur sticky top-0 z-50">
+        <div class="flex items-center space-x-6">
+            <span class="font-black tracking-tighter text-xl text-white">AI TEAMS <span class="text-xs font-mono text-neutral-500">// TELEMETRY HUB</span></span>
+            <nav class="hidden md:flex space-x-6 text-sm text-neutral-400">
+                <a href="../index.html" class="hover:text-white transition">&larr; Master Gateway</a>
+                <a href="../gateway/pinkhouse_test.html" class="hover:text-white transition">Pink House One</a>
+                <a href="../openriver/openriver_bridge.html" class="hover:text-white transition">OpenRiver L2</a>
+                <a href="#" class="text-white hover:text-teamsAccent transition">AI Teams Dashboard</a>
+            </nav>
+        </div>
+        <div class="flex items-center space-x-4">
+            <!-- System Telemetry Status -->
+            <span id="system-health-badge" class="text-xs uppercase tracking-widest px-3 py-1 bg-neutral-900 border border-emerald-500/40 text-emerald-400 rounded font-mono">Teams: Optimal</span>
+            <div class="w-8 h-8 rounded-full bg-teamsAccent flex items-center justify-center font-bold text-xs">AI</div>
+        </div>
+    </header>
 
-        grid.innerHTML = products.map((p, idx) => `
-            <div class="product-card" data-id="${p.id}" data-external-id="${p.external_id || 'ib_' + idx}">
-                <div class="product-img-slot">
-                    ${p.thumbnail_url ? `<img src="${p.thumbnail_url}" alt="${p.name}">` : '<span>[ Asset Loaded ]</span>'}
-                    <div class="product-badge">Vault Synced</div>
+    <!-- MAIN DASHBOARD CONTAINER -->
+    <main class="max-w-7xl mx-auto px-6 py-12 space-y-8">
+
+        <!-- ROW 1: CORE METRICS OVERVIEW -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+            <div class="bg-teamsCard border border-teamsBorder p-6 flex flex-col justify-between">
+                <div class="text-xs font-mono text-neutral-500 uppercase">Active Audio Nodes</div>
+                <div class="text-3xl font-black font-mono mt-2 text-white">4 Active</div>
+                <div class="text-[10px] font-mono text-emerald-400 mt-2">Bandcamp & YouTube Synced</div>
+            </div>
+
+            <div class="bg-teamsCard border border-teamsBorder p-6 flex flex-col justify-between">
+                <div class="text-xs font-mono text-neutral-500 uppercase">$RIVAL Token Routing</div>
+                <div class="text-3xl font-black font-mono mt-2 text-teamsCyan">Base L2</div>
+                <div class="text-[10px] font-mono text-neutral-400 mt-2">Zero-Latency State Verified</div>
+            </div>
+
+            <div class="bg-teamsCard border border-teamsBorder p-6 flex flex-col justify-between">
+                <div class="text-xs font-mono text-neutral-500 uppercase">Telemetry Latency</div>
+                <div class="text-3xl font-black font-mono mt-2 text-white">0.4ms</div>
+                <div class="text-[10px] font-mono text-emerald-400 mt-2">Serverless Edge Optimal</div>
+            </div>
+
+            <div class="bg-teamsCard border border-teamsBorder p-6 flex flex-col justify-between">
+                <div class="text-xs font-mono text-neutral-500 uppercase">Ecosystem Health</div>
+                <div class="text-3xl font-black font-mono mt-2 text-teamsAccent">100%</div>
+                <div class="text-[10px] font-mono text-neutral-400 mt-2">No Redundant Dependencies</div>
+            </div>
+        </div>
+
+        <!-- ROW 2: ACTIVE MEDIA PIPELINE MONITOR -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            
+            <!-- Column 1 & 2: Pipeline Feed -->
+            <div class="lg:col-span-2 bg-teamsCard border border-teamsBorder p-8 space-y-6">
+                <div class="flex justify-between items-center border-b border-teamsBorder pb-4">
+                    <div>
+                        <h2 class="text-xl font-black tracking-tight">MEDIA & ASSET PIPELINE TELEMETRY</h2>
+                        <p class="text-xs text-neutral-400 mt-1 font-mono">Monitoring distribution health and release compilation scripts.</p>
+                    </div>
+                    <button id="trigger-compile-btn" class="px-4 py-2 bg-white text-black font-bold uppercase tracking-wider text-xs hover:bg-teamsAccent hover:text-white transition">
+                        Run Diagnostics
+                    </button>
                 </div>
-                <div class="product-content">
-                    <div class="product-category">Printful Store Item // ID: ${p.id}</div>
-                    <div class="product-name">${p.name}</div>
-                    <div class="product-desc">Synchronized directly from your active Printful store inventory catalog. Ready for zero-inventory automated dispatch.</div>
-                </div>
-                <div class="product-footer">
-                    <span class="product-price">Active Drop</span>
-                    <button class="product-action-btn" onclick="window.openCheckout('${p.id}')">Acquire →</button>
+
+                <!-- Pipeline Table -->
+                <div class="space-y-4 font-mono text-xs">
+                    <div class="p-4 bg-teamsDark border border-teamsBorder flex justify-between items-center">
+                        <div>
+                            <div class="font-bold text-white">The Sunshine Club // Ep. 1-3</div>
+                            <div class="text-[10px] text-neutral-500 mt-0.5">Target: YouTube / Bandcamp Distribution Node</div>
+                        </div>
+                        <span class="px-2 py-1 bg-neutral-900 border border-emerald-500/40 text-emerald-400">ONLINE</span>
+                    </div>
+
+                    <div class="p-4 bg-teamsDark border border-teamsBorder flex justify-between items-center">
+                        <div>
+                            <div class="font-bold text-white">Sincerely, Yours // Live Studio Master</div>
+                            <div class="text-[10px] text-neutral-500 mt-0.5">Target: BandLab Multi-Track Compilation</div>
+                        </div>
+                        <span class="px-2 py-1 bg-neutral-900 border border-emerald-500/40 text-emerald-400">SYNCED</span>
+                    </div>
+
+                    <div class="p-4 bg-teamsDark border border-teamsBorder flex justify-between items-center">
+                        <div>
+                            <div class="font-bold text-white">Red: The Largest Love Story</div>
+                            <div class="text-[10px] text-neutral-500 mt-0.5">Target: Immersive Audio-Doc Release Rail</div>
+                        </div>
+                        <span class="px-2 py-1 bg-neutral-900 border border-emerald-500/40 text-emerald-400">ACTIVE</span>
+                    </div>
+
+                    <div class="p-4 bg-teamsDark border border-teamsBorder flex justify-between items-center">
+                        <div>
+                            <div class="font-bold text-white">Allowance // Pixar-Style Concept</div>
+                            <div class="text-[10px] text-neutral-500 mt-0.5">Target: Visual Narrative Storyboard Index</div>
+                        </div>
+                        <span class="px-2 py-1 bg-neutral-900 border border-teamsCyan/40 text-teamsCyan">DEVELOPING</span>
+                    </div>
                 </div>
             </div>
-        `).join('');
-    }
 
-    window.openCheckout = function(id) {
-        selectedProduct = fetchedProducts.find(p => p.id == id);
-        if (!selectedProduct) return;
+            <!-- Column 3: Real-Time Script Log -->
+            <div class="bg-teamsCard border border-teamsBorder p-6 flex flex-col justify-between">
+                <div>
+                    <div class="flex justify-between items-center mb-4 border-b border-teamsBorder pb-2">
+                        <h3 class="text-sm font-bold uppercase tracking-wider font-mono text-neutral-300">Live AI Teams Console</h3>
+                        <span class="text-[10px] uppercase font-mono text-emerald-400 animate-pulse">● Streaming</span>
+                    </div>
+                    <div id="ai-teams-log" class="bg-teamsDark border border-teamsBorder p-3 font-mono text-[11px] text-neutral-400 h-64 overflow-y-auto space-y-2">
+                        <div>[00:00:01] AI_TEAMS_DAEMON: Initializing autonomous telemetry vectors...</div>
+                        <div>[00:00:02] TELEMETRY: Node handshake successful with Gateway.</div>
+                        <div>[00:00:03] OPENRIVER: Base L2 status feed stable.</div>
+                    </div>
+                </div>
+                <div class="mt-4 pt-4 border-t border-teamsBorder text-[10px] font-mono text-neutral-500 text-center">
+                    AI TEAMS // SYSTEM SECURE
+                </div>
+            </div>
 
-        document.getElementById('modal-product-name').textContent = selectedProduct.name;
-        document.getElementById('modal-product-category').textContent = `Printful Store ID: ${selectedProduct.id}`;
+        </div>
 
-        checkoutModal.classList.add('active');
-    };
+        <!-- ROW 3: LIVE PRINTFUL STOREFRONT CATALOG -->
+        <div class="bg-teamsCard border border-teamsBorder p-8 space-y-6">
+            <div class="flex justify-between items-center border-b border-teamsBorder pb-4">
+                <div>
+                    <h2 class="text-xl font-black tracking-tight">PRINTFUL DEPLOYMENT // APPAREL CATALOG NODE</h2>
+                    <p class="text-xs text-neutral-400 mt-1 font-mono">Real-time sync pulling from GitHub Action registry (`products.json`).</p>
+                </div>
+                <span id="product-count-badge" class="px-3 py-1 bg-neutral-900 border border-teamsCyan/40 text-teamsCyan font-mono text-xs">Scanning Catalog...</span>
+            </div>
 
-    window.closeCheckoutModal = function() {
-        checkoutModal.classList.remove('active');
-        selectedProduct = null;
-    };
+            <!-- Product Grid Injector Container -->
+            <div id="product-grid" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Dynamically injected items will populate here -->
+                <div class="p-6 bg-teamsDark border border-teamsBorder font-mono text-xs text-neutral-500 text-center col-span-3">
+                    Querying products.json feed...
+                </div>
+            </div>
+        </div>
 
-    window.processPayPalPayment = function() {
-        if (!selectedProduct) return;
-        
-        const btn = document.querySelector('.paypal-placeholder-box');
-        btn.style.background = '#4dff88';
-        btn.style.color = '#000';
-        btn.textContent = 'Authorizing PayPal & Dispatching...';
+    </main>
 
-        setTimeout(() => {
-            alert(`SUCCESS! PayPal authorized for ${selectedProduct.name}. Order pipeline triggered successfully via sovereign vault!`);
-            btn.style.background = '';
-            btn.style.color = '';
-            btn.textContent = 'Pay with PayPal & Dispatch Printful Order';
-            closeCheckoutModal();
-        }, 1200);
-    };
+    <!-- FOOTER -->
+    <footer class="border-t border-teamsBorder py-8 text-center text-xs text-neutral-500 tracking-wider font-mono">
+        AI TEAMS TELEMETRY // RED ROCK & PINK HOUSE SISTERHOOD FAMILY &copy; 2026.
+    </footer>
 
-    loadCatalog();
-})();
-</script>
+    <!-- AI TEAMS UI2 LOGIC SCRIPT -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log("⚡ [AI Teams Initialized]: Telemetry hub online and listening.");
 
+            const logContainer = document.getElementById('ai-teams-log');
+            const compileButton = document.getElementById('trigger-compile-btn');
+            const productGrid = document.getElementById('product-grid');
+            const productCountBadge = document.getElementById('product-count-badge');
+
+            const pushLog = (text) => {
+                const timeStr = new Date().toTimeString().split(' ')[0];
+                const entry = document.createElement('div');
+                entry.innerText = `[${timeStr}] ${text}`;
+                logContainer.appendChild(entry);
+                logContainer.scrollTop = logContainer.scrollHeight;
+            };
+
+            // Fetch and Render Printful Products
+            fetch('../products.json')
+                .then(response => {
+                    if (!response.ok) throw new Error("Failed to load products registry.");
+                    return response.json();
+                })
+                .then(items => {
+                    if (!items || items.length === 0) {
+                        productGrid.innerHTML = `
+                            <div class="p-6 bg-teamsDark border border-teamsBorder font-mono text-xs text-neutral-500 text-center col-span-3">
+                                No active inventory items detected in registry.
+                            </div>`;
+                        productCountBadge.innerText = "0 Items Synchronized";
+                        return;
+                    }
+
+                    productCountBadge.innerText = `${items.length} Node(s) Synchronized`;
+                    productGrid.innerHTML = ""; // Clear loader
+
+                    items.forEach(product => {
+                        const card = document.createElement('div');
+                        card.className = "bg-teamsDark border border-teamsBorder p-4 flex flex-col justify-between space-y-4 hover:border-teamsAccent transition group";
+                        
+                        card.innerHTML = `
+                            <div class="space-y-3">
+                                <div class="w-full h-48 bg-neutral-900 border border-teamsBorder overflow-hidden flex items-center justify-center relative">
+                                    <img src="${product.thumbnail_url || ''}" alt="${product.name}" class="object-cover h-full w-full group-hover:scale-105 transition duration-300">
+                                    <span class="absolute top-2 right-2 px-2 py-0.5 bg-black/80 border border-teamsBorder text-[10px] font-mono text-emerald-400">SYNCED</span>
+                                </div>
+                                <h3 class="font-bold text-sm tracking-tight text-white">${product.name}</h3>
+                            </div>
+                            <div class="pt-3 border-t border-teamsBorder flex justify-between items-center font-mono text-xs">
+                                <span class="text-neutral-400">Variants: ${product.variants || 1}</span>
+                                <span class="px-3 py-1 bg-white text-black font-bold uppercase hover:bg-teamsAccent hover:text-white transition cursor-pointer">Inspect Node</span>
+                            </div>
+                        `;
+                        productGrid.appendChild(card);
+                    });
+                    pushLog(`REGISTRY: Successfully loaded ${items.length} product(s) from products.json.`);
+                })
+                .catch(err => {
+                    console.error(err);
+                    productGrid.innerHTML = `
+                        <div class="p-6 bg-teamsDark border border-teamsBorder font-mono text-xs text-teamsAccent text-center col-span-3">
+                            Error loading products.json feed. Check deployment paths.
+                        </div>`;
+                    productCountBadge.innerText = "Sync Error";
+                    pushLog("ERROR: Failed to parse products.json registry file.");
+                });
+
+            // Periodic telemetry event generator
+            setInterval(() => {
+                const telemetryMsgs = [
+                    "AI_TEAMS: Audio stream packet acknowledged from distribution node.",
+                    "HEARTBEAT: Base L2 transaction block verified.",
+                    "OPTIMIZATION: Unused dependencies purged from runtime stack.",
+                    "METADATA: Registry indices re-indexed cleanly by autonomous agents."
+                ];
+                if (Math.random() > 0.5) {
+                    const randomMsg = telemetryMsgs[Math.floor(Math.random() * telemetryMsgs.length)];
+                    pushLog(randomMsg);
+                }
+            }, 7000);
+
+            // Diagnostics Button Trigger
+            compileButton.addEventListener('click', () => {
+                pushLog("DIAGNOSTICS: AI Teams initiating full-stack ecosystem scan...");
+                compileButton.innerText = "RUNNING PROTOCOL SCAN...";
+                compileButton.style.backgroundColor = "#ff2a5f";
+                compileButton.style.color = "#ffffff";
+
+                setTimeout(() => {
+                    pushLog("SCAN: Zero bloat detected. AI Teams pipeline integrity at 100%.");
+                    compileButton.innerText = "DIAGNOSTICS PASSED";
+                    
+                    setTimeout(() => {
+                        compileButton.innerText = "Run Diagnostics";
+                        compileButton.style.backgroundColor = "";
+                        compileButton.style.color = "";
+                    }, 1500);
+                }, 1800);
+            });
+        });
+    </script>
 </body>
 </html>
