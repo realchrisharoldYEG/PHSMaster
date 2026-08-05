@@ -270,16 +270,19 @@
                     modalVariants.appendChild(option);
                 }
 
-                // Resolve public product link or fallback gracefully to bypass dashboard links
+                // HARD OVERRIDE: Neutralize Printful dashboard links entirely
                 let targetUrl = product.url || product.external_url || '';
-                if (targetUrl.includes('dashboard.printful.com') || !targetUrl) {
-                    targetUrl = 'https://www.printful.com';
+                
+                // If it contains dashboard pointers or sync IDs that bounce back to admin, point straight to your storefront/catalog or clean public fallback
+                if (targetUrl.includes('dashboard.printful.com') || targetUrl.includes('/store/') || !targetUrl) {
+                    targetUrl = 'https://www.printful.com'; 
                 }
+                
                 modalBuyBtn.href = targetUrl;
 
                 // Show modal
                 modal.classList.remove('hidden');
-                pushLog(`INSPECT: Opened node specs for [${product.name}]`);
+                pushLog(`INSPECT: Opened node specs for [${product.name}] (Resolved URL: ${targetUrl})`);
             }
 
             // Close triggers for Modal
