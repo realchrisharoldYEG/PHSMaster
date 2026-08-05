@@ -8,6 +8,8 @@ on:
 jobs:
   update-catalog:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -45,11 +47,9 @@ jobs:
                   print("RAW PRINTFUL RESPONSE:", raw_data)
                   data = json.loads(raw_data)
                   
-                  # Printful usually nests the items under "result"
                   items = data.get("result", [])
                   print(f"Parsed items count: {len(items)}")
 
-                  # Write out to products.json for your storefront
                   with open("products.json", "w") as f:
                       json.dump(items, f, indent=2)
                       
