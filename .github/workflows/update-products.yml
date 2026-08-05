@@ -1,0 +1,66 @@
+name: Update Printful Products
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main, master ]
+
+jobs:
+  update-catalog:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Fetch Printful Catalog
+        env:
+          PRINTFUL_API_KEY: ${{ secrets.PRINTFUL_API_KEY }}
+          PRINTFUL_STORE_ID: ${{ secrets.PRINTFUL_STORE_ID }}
+        run: |
+          python3 -c '
+          import urllib.request
+          import json
+          import os
+          import sys
+
+          token = os.environ.get("PRINTFUL_API_KEY", "")
+          store_id = os.environ.get("PRINTFUL_STORE_ID", "")
+          
+          url = "https://api.printful.com/store/products"
+          headers = {
+              "Authorization": f"Bearer {token}",
+              "X-PF-Store-Id": store_id,
+              "User-Agent": "Mozilla/5.0"
+          }
+
+          req = urllib.request.Request(url, headers=headers)
+          try:
+              with urllib.request.urlopen(req) as response:
+                  raw_data = response.read().decode()
+                  print("RAW PRINTFUL RESPONSE:", raw_data)
+                  data = json.loads(raw_data)
+                  
+                  # Printful usually nests the items under "result"
+                  items = data.get("result", [])
+                  print(f"Parsed items count: {len(items)}")
+
+                  # Write out to products.json for your storefront
+                  with open("products.json", "w") as f:
+                      json.dump(items, f, indent=2)
+                      
+          except urllib.error.HTTPError as e:
+              print(f"HTTP Error {e.code}: {e.read().decode()}")
+              sys.exit(1)
+          '
+
+      - name: Commit and Push if changed
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add products.json
+          git diff --quiet && git diff --staged --quiet || (git commit -m "Update products.json automatically" && git push)
