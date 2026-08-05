@@ -15,6 +15,7 @@ jobs:
       - name: Fetch Printful Catalog
         env:
           PRINTFUL_API_KEY: ${{ secrets.PRINTFUL_API_KEY }}
+          PRINTFUL_STORE_ID: ${{ secrets.PRINTFUL_STORE_ID }}
         run: |
           python3 -c '
           import urllib.request
@@ -23,14 +24,22 @@ jobs:
           import sys
 
           token = os.environ.get("PRINTFUL_API_KEY", "")
+          store_id = os.environ.get("PRINTFUL_STORE_ID", "")
+          
           print(f"Token length loaded: {len(token)}")
+          print(f"Store ID loaded: {store_id}")
+          
           if not token:
               print("ERROR: PRINTFUL_API_KEY environment variable is empty!")
+              sys.exit(1)
+          if not store_id:
+              print("ERROR: PRINTFUL_STORE_ID environment variable is empty!")
               sys.exit(1)
 
           url = "https://api.printful.com/store/products"
           headers = {
               "Authorization": f"Bearer {token}",
+              "X-PF-Store-Id": store_id,
               "User-Agent": "Mozilla/5.0"
           }
 
