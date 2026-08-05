@@ -3,7 +3,18 @@
     "id": 454076237,
     "external_id": "6a71f3b849aba8",
     "name": "'I BLAME TS' x Pink House Collective Unisex Champion hoodie",
-    "variants": 6,
+    "price": "54.99",
+    "retail_price": "54.99",
+    "description": "High-density heavy fleece Champion hoodie featuring the signature 'I BLAME TS' motif. Built for late-night studio sessions, cold Edmonton nights, and uncompromising brutalist aesthetics.",
+    "url": "https://www.printful.com",
+    "variants": [
+      { "id": "454076237-s", "name": "Small / Black", "price": "54.99" },
+      { "id": "454076237-m", "name": "Medium / Black", "price": "54.99" },
+      { "id": "454076237-l", "name": "Large / Black", "price": "54.99" },
+      { "id": "454076237-xl", "name": "XL / Black", "price": "54.99" },
+      { "id": "454076237-2xl", "name": "2XL / Black", "price": "57.99" },
+      { "id": "454076237-3xl", "name": "3XL / Black", "price": "59.99" }
+    ],
     "synced": 6,
     "thumbnail_url": "https://files.cdn.printful.com/files/21d/21de89947ceb28b2eaabb73baba2dead_preview.png",
     "is_ignored": false
